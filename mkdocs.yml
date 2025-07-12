@@ -1,0 +1,52 @@
+site_name: SuperStack
+site_url: https://explodinglabs.com/superstack/
+repo_url: https://github.com/explodinglabs/superstack
+theme:
+  name: material
+  logo: assets/logo.png
+  features:
+    - navigation.footer
+    - palette.toggle
+    - content.code.copy
+  palette:
+    # Palette toggle for automatic mode
+    - media: "(prefers-color-scheme)"
+      primary: "black"
+      toggle:
+        icon: material/brightness-auto
+        name: Switch to light mode
+
+    # Palette toggle for light mode
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      primary: "black"
+      toggle:
+        icon: material/brightness-7
+        name: Switch to dark mode
+
+    # Palette toggle for dark mode
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      primary: "black"
+      toggle:
+        icon: material/brightness-4
+        name: Switch to system preference
+plugins:
+  - search
+  - mermaid2
+markdown_extensions:
+  - pymdownx.highlight
+  - pymdownx.superfences:
+      # make exceptions to highlighting of code:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:mermaid2.fence_mermaid_custom
+nav:
+  - Home: index.md
+  - Getting Started: gettingstarted.md
+  - Migrations: migrations.md
+  - Postgres Extensions: extensions.md
+  - Psql: psql.md
+  - Deploying to Remote Environments: deploying.md
+  - Upgrading SuperStack: upgrading.md
