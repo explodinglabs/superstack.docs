@@ -1,7 +1,7 @@
 # 🚀 Getting Started
 
 <video controls width="100%">
-  <source src="https://explodinglabs.com/assets/superstack-getting-started.mp4" type="video/mp4">
+  <source src="/superstack/assets/getting-started.mp4" type="video/mp4">
   Your browser does not support the video tag.
   Music: https://www.bensound.com
   License code: UZG5X7IWWLQOQEU1
