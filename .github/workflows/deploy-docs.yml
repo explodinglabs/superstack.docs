@@ -9,7 +9,6 @@ on:
 
 jobs:
   deploy:
-    if: github.repository == 'explodinglabs/superstack'
     runs-on: ubuntu-latest
 
     steps:
