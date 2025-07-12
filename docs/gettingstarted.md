@@ -2,10 +2,11 @@
 
 <video controls width="100%">
   <source src="/superstack/assets/getting-started.mp4" type="video/mp4">
+  <data 
+    value="Music: Bensound, License: UZG5X7IWWLQOQEU1, Artist: Lunar Years" 
+    hidden>
+  </data>
   Your browser does not support the video tag.
-  Music: https://www.bensound.com
-  License code: UZG5X7IWWLQOQEU1
-  Artist: : Lunar Years
 </video>
 
 SuperStack uses Docker, so make sure [Docker is
