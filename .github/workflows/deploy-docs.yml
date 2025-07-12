@@ -29,9 +29,11 @@ jobs:
       - name: Clone target repo
         run: |
           git clone https://x-access-token:${{ secrets.TARGET_REPO_PAT }}@github.com/explodinglabs/explodinglabs.com.git target-repo
-          rm -rf target-repo/$(basename "$GITHUB_REPOSITORY")
-          mkdir -p target-repo/$(basename "$GITHUB_REPOSITORY")
-          cp -a site/. target-repo/$(basename "$GITHUB_REPOSITORY")/
+          PROJECT_NAME=${GITHUB_REPOSITORY##*/}          # get repo name, e.g., superstack.docs
+          PROJECT_NAME=${PROJECT_NAME%.docs}             # remove .docs suffix if present
+          rm -rf target-repo/$PROJECT_NAME
+          mkdir -p target-repo/$PROJECT_NAME
+          cp -a site/. target-repo/$PROJECT_NAME/
         env:
           GIT_AUTHOR_NAME: GitHub Actions
           GIT_COMMITTER_NAME: GitHub Actions
