@@ -93,41 +93,17 @@ SuperStack automatically:
 3. Launches PostgREST and Swagger UI
 4. Serves everything through Caddy
 
-```mermaid
-flowchart TD
-    Caddy["Caddy (API Gateway)"]
-    Caddy --> Services["Services (PostgREST, Swagger UI + more)"]
-    Services --> Postgres
+## Change the Docker images to your own (Recommended)
+
+In `compose.yaml`, change the `explodinglabs` images to your own:
+
+```yaml
+postgres:
+  image: ghcr.io/youruser/myapp-postgres:0.1.0
+
+caddy:
+  image: ghcr.io/youruser/myapp-caddy:0.1.0
 ```
-
-> 💡 Only Caddy exposes a port – all services are routed through it.
-
-## Project Structure
-
-```
-📁 bin/                  → Helper scripts (e.g. wrappers for CLI tools)
-📁 caddy/                → Custom Caddy configuration and certificates
-📁 docs/                 → Markdown files for SuperStack documentation
-📁 postgres/             → SQL migrations and configuration of the postgres container
-📄 compose.yaml          → Main Docker Compose config
-📄 compose.override.yaml → Optional local overrides (development only)
-📄 example.env           → Example environment variables — copy to `.env`
-📄 LICENSE               → License file (MIT)
-📄 logo.png              → SuperStack logo for README/docs
-📄 mkdocs.yml            → MkDocs configuration for documentation site
-📄 README.md             → Overview and quick start for the repository
-```
-
-## 🔄 Resetting
-
-If you want to start fresh:
-
-```sh
-docker compose down --volumes
-docker compose up -d
-```
-
-This will wipe your database and re-run all migrations from scratch.
 
 ## ➕ What's Next?
 
