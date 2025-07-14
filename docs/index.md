@@ -42,6 +42,13 @@ It's perfect for:
 Everything runs inside Docker and routes through a single exposed port (via
 Caddy), making it easy to develop locally or deploy remotely.
 
+```mermaid
+flowchart TD
+    Caddy["Caddy (API Gateway)"]
+    Caddy --> Services["Services (PostgREST, Swagger UI + more)"]
+    Services --> Postgres
+```
+
 ---
 
 ## 📚 What's next?

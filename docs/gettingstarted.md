@@ -93,6 +93,8 @@ SuperStack automatically:
 3. Launches PostgREST and Swagger UI
 4. Serves everything through Caddy
 
+> 💡 Only Caddy exposes a port – all services are routed through it.
+
 ## Change the Docker images to your own (Recommended)
 
 In `compose.yaml`, change the `explodinglabs` images to your own:
