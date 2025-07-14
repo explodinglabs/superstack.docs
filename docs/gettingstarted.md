@@ -14,7 +14,7 @@ installed](https://docs.docker.com/get-docker/) before you begin.
 
 ## 1. Get SuperStack
 
-### Option 1: Use the Template (Recommended)
+### Option 1: Use the Template
 
 The easiest way to get started:
 
