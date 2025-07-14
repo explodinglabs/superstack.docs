@@ -19,13 +19,13 @@ installed](https://docs.docker.com/get-docker/) before you begin.
 The easiest way to get started:
 
 Click [Use this template](https://github.com/explodinglabs/superstack/generate)
-and create a new repository (e.g. `myapp`) on GitHub.
+and create a new repository (e.g. `myapp-backend`) on GitHub.
 
 Clone it to your machine:
 
 ```sh
-git clone https://github.com/yourname/myapp.git
-cd myapp
+git clone https://github.com/yourname/myapp-backend.git
+cd myapp-backend
 ```
 
 ### Option 2: Clone and Track Upstream (Advanced)
@@ -34,15 +34,15 @@ If you want to keep SuperStack’s Git history and pull upstream changes later,
 clone SuperStack:
 
 ```sh
-git clone https://github.com/explodinglabs/superstack.git myapp
-cd myapp
+git clone https://github.com/explodinglabs/superstack.git myapp-backend
+cd myapp-backend
 ```
 
 [Create your own repo](https://github.com/new), then:
 
 ```sh
 git remote rename origin upstream
-git remote add origin https://github.com/yourname/myapp.git
+git remote add origin https://github.com/yourname/myapp-backend.git
 git push -u origin main
 ```
 
