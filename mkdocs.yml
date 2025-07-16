@@ -1,5 +1,5 @@
 site_name: SuperStack
-site_url: https://explodinglabs.com/superstack/
+site_url: https://www.explodinglabs.com/superstack/
 repo_url: https://github.com/explodinglabs/superstack
 theme:
   name: material
@@ -31,6 +31,8 @@ theme:
       toggle:
         icon: material/brightness-4
         name: Switch to system preference
+extra_css:
+  - assets/extra.css
 plugins:
   - search
   - mermaid2
