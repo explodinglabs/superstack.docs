@@ -2,16 +2,15 @@
   .logo-responsive {
     float: right;
     padding-left: 2em;
-  }
 
-  @media (max-width: 768px) {
-    .logo-responsive {
+    @media (max-width: 768px) {
       float: none;
       display: block;
-      margin: 0 auto 2em;
+      margin: 0 auto 1em;
       padding: 0;
     }
   }
+
 </style>
 
 <img src="assets/logo.png" alt="SuperStack Logo" class="logo-responsive" />
@@ -41,6 +40,10 @@ It's perfect for:
 
 Everything runs inside Docker and routes through a single exposed port (via
 Caddy), making it easy to develop locally or deploy remotely.
+
+---
+
+## 🏛️ Architecture
 
 ```mermaid
 flowchart TD
