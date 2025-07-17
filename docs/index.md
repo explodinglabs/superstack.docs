@@ -1,16 +1,17 @@
 <style>
   .logo-responsive {
+    display: block;
     float: right;
-    padding-left: 2em;
+    padding: 0 1em 0 2em;
 
     @media (max-width: 768px) {
       float: none;
       display: block;
-      margin: 0 auto 1em;
+      text-align: center;
+      margin: 0 auto 1em auto;
       padding: 0;
     }
   }
-
 </style>
 
 <img src="assets/logo.png" alt="SuperStack Logo" class="logo-responsive" />
