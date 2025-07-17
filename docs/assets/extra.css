@@ -52,13 +52,24 @@
   }
 
   pre {
-    line-height: 140%;
+    margin: 0;
+    border: 0;
+    @media screen and (max-width: 44.9375em) {  /* ~719px */
+      margin-left: 20px;
+    }
   }
 
   pre > code {
-    padding-left: 20px !important;
-    padding-right: 20px !important;
+    line-height: 140%;
+    padding-left: 20px;
+
+    @media screen and (max-width: 44.9375em) {  /* ~719px */
+      margin: 0;
+      border: 0;
+      padding-left: 20px !important;
+    }
   }
+
 }
 
 /* Target only the page title (first H1 in the article) */
