@@ -1,8 +1,17 @@
 :root {
+  /* ✅ Fonts */
   --md-text-font: -apple-system, BlinkMacSystemFont, "Segoe UI Adjusted",
-    "Segoe UI", "Liberation Sans", sans-serif !important;
+    "Segoe UI", "Liberation Sans", sans-serif;
   --md-code-font: "SF Mono", SFMono-Regular, ui-monospace, "DejaVu Sans Mono",
     Menlo, Consolas, monospace;
+
+  /* ✅ Light Mode Text Colors */
+  --md-default-fg-color: #111;
+}
+
+[data-md-color-scheme="slate"] {
+  /* ✅ Dark Mode Text Colors */
+  --md-default-fg-color: #e9e9e9;
 }
 
 /* Fix a horizontal scroll isue */
@@ -26,7 +35,6 @@
     padding: 0;
     padding-left: 20px;
     padding-right: 20px;
-    color: black;
   }
 
   /* Change header fonts */
@@ -38,28 +46,21 @@
   }
 
   h1 {
+    color: var(--md-default-fg-color);
     font-size: 1.2rem;
-    margin-top: 0.3em;
     margin-bottom: 1em;
   }
 
   h2 {
     font-size: 1rem;
-    margin-top: 1.5em;
-    margin-bottom: 1em;
   }
 
   h3 {
     font-size: 0.9rem;
-    margin-top: 2em;
-    margin-bottom: 1.1em;
   }
 
   p, ul, ol, pre {
     font-size: 17px;
-  }
-
-  p {
     margin-top: 1em;
     margin-bottom: 1em;
   }
@@ -70,16 +71,23 @@
   }
 
   blockquote {
-    color: #666;
-    background-color: #ffd;
     border-left: 0 !important;
-    border-radius: 5px;
+    border-radius: 0;
     margin: 0;
-    padding: 1px 0 !important;
+    margin-bottom: 1em;
+    padding: 1px;
+    background-color: rgba(255, 87, 34, 0.05);
+
+    [data-md-color-scheme="slate"] {
+      background-color: rgba(255, 204, 0, 0.1);
+    }
   }
 
   pre {
     line-height: 150%;
+  }
+  pre > code {
+    padding-left: 20px;
   }
 }
 

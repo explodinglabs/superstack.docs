@@ -67,8 +67,7 @@ atomically.
 
 For example:
 
-```sql
--- File: postgres/migrations/03-create_table_example.sql
+```sql title="postgres/migrations/03-create_table_example.sql"
 begin;
 
 create table director (
