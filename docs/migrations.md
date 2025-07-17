@@ -1,27 +1,9 @@
-# Build your App
-
-## Project Structure
-
-```
-📁 bin/                  → Helper scripts (e.g. wrappers for CLI tools)
-📁 caddy/                → Custom Caddy configuration and certificates
-📁 docs/                 → Markdown files for SuperStack documentation
-📁 postgres/             → SQL migrations and configuration of the postgres container
-📄 compose.yaml          → Main Docker Compose config
-📄 compose.override.yaml → Optional local overrides (development only)
-📄 example.env           → Example environment variables — copy to `.env`
-📄 LICENSE               → License file (MIT)
-📄 logo.png              → SuperStack logo for README/docs
-📄 mkdocs.yml            → MkDocs configuration for documentation site
-📄 README.md             → Overview and quick start for the repository
-```
-
-## 📜 Migrations
+# 📜 Migrations
 
 SuperStack includes a simple built-in system for managing database schema
 migrations.
 
-### ✍️ Writing Migrations
+## ✍️ Writing Migrations
 
 Place your migration scripts in:
 
@@ -36,7 +18,7 @@ Each file should be:
 - Written in plain SQL
 - But can include environment variables.
 
-### ▶️ Applying Migrations
+## ▶️ Applying Migrations
 
 When the Postgres container starts with no existing data, SuperStack will
 automatically run migrations once.
@@ -59,7 +41,7 @@ Already-applied scripts are skipped on subsequent runs.
 
 > 💡 `bin/postgres` is short for `docker compose exec postgres`
 
-### 🔁 Transactions
+## 🔁 Transactions
 
 Use `BEGIN;` and `COMMIT;` to wrap migration files when all included
 statements are transactional. This ensures that all changes are applied
@@ -108,7 +90,7 @@ DISCARD ALL
 LOAD
 ```
 
-### 🔄 Nuke Everything
+## 🔄 Nuke Everything
 
 If you want to start fresh, wipe your database and re-run all migrations from
 scratch:
