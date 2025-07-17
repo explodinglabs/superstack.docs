@@ -8,7 +8,6 @@
   margin: 0;
   padding: 0;
   padding-bottom: 3rem;
-
 }
 
 .md-typeset {
@@ -53,11 +52,13 @@
   }
 
   pre {
-    padding-left: 20px;
-    padding-right: 20px;
     line-height: 140%;
   }
 
+  pre > code {
+    padding-left: 20px;
+    padding-right: 20px;
+  }
 }
 
 /* Target only the page title (first H1 in the article) */
