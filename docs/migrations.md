@@ -31,7 +31,7 @@ postgres/migrations/
 
 Each file should be:
 
-- A `.sql` file
+- An `.sql` file
 - Numbered in order (e.g. `00-init.sql`, `01-extensions.sql`, `02-auth.sql`)
 - Written in plain SQL
 - But can include environment variables.
