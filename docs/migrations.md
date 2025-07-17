@@ -23,8 +23,8 @@ Each file should be:
 When the Postgres container starts with no existing data, SuperStack will
 automatically run migrations once.
 
-After the first `docker compose up`, migrations will only run if you
-manually apply them.
+After the first startup, migrations will only run if you manually apply
+them.
 
 To apply your migrations, run:
 
@@ -35,21 +35,16 @@ bin/postgres migrate
 This will:
 
 1. Run any migration files that haven’t been applied yet (in filename order)
-2. Record each successfully applied file in `.applied_migrations`
+2. Record each successfully applied file in `.applied_migrations` (this
+   file lives in the postgres data volume)
 
 Already-applied scripts are skipped on subsequent runs.
 
-> 💡 `bin/postgres` is short for `docker compose exec postgres`
+> 💡 `bin/postgres` is a small script that basically aliases `docker compose exec postgres`
 
-## 🔁 Transactions
+Here's an example migration script:
 
-Use `BEGIN;` and `COMMIT;` to wrap migration files when all included
-statements are transactional. This ensures that all changes are applied
-atomically.
-
-For example:
-
-```sql title="postgres/migrations/03-create_table_example.sql"
+```sql title="postgres/migrations/02-create_table_example.sql"
 begin;
 
 create table director (
@@ -66,13 +61,15 @@ create table movie (
 commit;
 ```
 
-> 💡 If your migration script only contains one statement, there's no need
-> to use a transaction, the statement will be auto-committed.
+## 🔁 Transactions
+
+Use `begin;` and `commit;` to wrap statements in a transaction. This
+ensures that all changes are applied atomically. Any statements outside of
+transactions will be auto-committed.
 
 Avoid wrapping non-transactional operations in a transaction — these will
-cause errors if used inside `BEGIN ... COMMIT`.
-
-Examples of non-transactional statements include:
+cause errors if used inside `begin ... commit`. Examples of
+non-transactional statements include:
 
 ```sql
 CREATE EXTENSION
