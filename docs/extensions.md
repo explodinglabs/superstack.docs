@@ -14,7 +14,7 @@ as:
 create extension pgcrypto;
 ```
 
-> ⚠️ `create extension` is non-transactional, so don’t wrap this file in
+> ⚠️ `create extension` is non-transactional, so don’t wrap this in
 > `BEGIN/COMMIT`.
 
 ## 🛠️ Building an Extension from Source
