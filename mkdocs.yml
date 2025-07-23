@@ -1,5 +1,5 @@
 site_name: SuperStack
-site_url: https://www.explodinglabs.com/superstack/
+site_url: https://explodinglabs.com/superstack/
 repo_url: https://github.com/explodinglabs/superstack
 theme:
   name: material
@@ -11,6 +11,7 @@ theme:
   palette:
     # Palette toggle for automatic mode
     - media: "(prefers-color-scheme)"
+      scheme: default
       primary: "black"
       toggle:
         icon: material/brightness-auto
@@ -31,11 +32,11 @@ theme:
       toggle:
         icon: material/brightness-4
         name: Switch to system preference
-extra_css:
-  - assets/extra.css
 plugins:
   - search
   - mermaid2
+extra_css:
+  - assets/extra.css
 markdown_extensions:
   - pymdownx.highlight
   - pymdownx.superfences:

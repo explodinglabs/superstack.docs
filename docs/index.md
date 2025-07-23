@@ -49,7 +49,7 @@ Caddy), making it easy to develop locally or deploy remotely.
 ```mermaid
 flowchart TD
     Caddy["Caddy (API Gateway)"]
-    Caddy --> Services["Services (PostgREST, Swagger UI + more)"]
+    Caddy --> Services["Services (PostgREST, + add more)"]
     Services --> Postgres
 ```
 
