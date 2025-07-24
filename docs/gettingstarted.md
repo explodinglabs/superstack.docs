@@ -78,10 +78,6 @@ docker compose up -d
 
 That's it – your backend is live.
 
-You can now open
-[http://localhost:8000/openapi/](http://localhost:8000/openapi/) to explore
-your API (assuming 8000 is your Caddy port).
-
 ---
 
 ## 🧩 What Just Happened?
@@ -90,7 +86,7 @@ SuperStack automatically:
 
 1. Starts a fresh Postgres database
 2. Applies initial migrations
-3. Launches PostgREST and Swagger UI
+3. Launches PostgREST
 4. Serves everything through Caddy
 
 > 💡 Only Caddy exposes a port – all services are routed through it.
