@@ -91,18 +91,6 @@ SuperStack automatically:
 
 > 💡 Only Caddy exposes a port – all services are routed through it.
 
-## Change the Docker images to your own (Recommended)
-
-In `compose.yaml`, change the `explodinglabs` images to your own:
-
-```yaml
-postgres:
-  image: ghcr.io/youruser/myapp-postgres:0.1.0
-
-caddy:
-  image: ghcr.io/youruser/myapp-caddy:0.1.0
-```
-
 ## ➕ What's Next?
 
 👉 [Create your database schema with migrations](migrations.md)  
