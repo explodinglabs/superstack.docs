@@ -1,15 +1,15 @@
 # 🖥️ Using psql
 
-`psql` is the command-line tool for interacting with your PostgreSQL
-database. SuperStack makes it easy to run psql inside the container using a
-helper script.
+`psql` is the command-line tool for interacting with your PostgreSQL database.
+SuperStack makes it easy to run psql inside the container using a helper
+script.
 
 ## 📟 Open a psql Shell
 
 To connect interactively:
 
 ```sh
-bin/postgres psql
+bin/postgres
 ```
 
 Example output:
@@ -21,13 +21,19 @@ Type "help" for help.
 app=#
 ```
 
+> 🗒️ **By default, `bin/postgres` opens a `psql` shell.** You can still run
+> other commands (e.g., bin/postgres bash) if needed.
+
 ## 🔹 Run Inline SQL Commands
 
-You can also run SQL directly from the command line:
+You can also run SQL directly without opening an interactive shell:
 
 ```
-bin/postgres psql -c 'select * from movie;'
+bin/postgres -c 'select * from movie;'
 ```
+
+✅ Because `bin/postgres` defaults to `psql`, you don’t need to type `psql`
+explicitly.
 
 ## ⚙️ Customize psql Behavior
 
