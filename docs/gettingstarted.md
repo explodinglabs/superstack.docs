@@ -16,8 +16,6 @@ installed](https://docs.docker.com/get-docker/) before you begin.
 
 ### Option 1: Use the Template (Easiest)
 
-The easiest way to get started:
-
 Click [Use this template](https://github.com/explodinglabs/superstack/generate)
 and create a new repository (e.g. `myapp-backend`) on GitHub.
 
