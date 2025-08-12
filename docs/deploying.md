@@ -44,8 +44,6 @@ SSH into your server and bring up the stack.
 
 For production, avoid using `.env` files. Instead, set secrets directly:
 
-> 💡 Avoid leaking secrets by disabling shell history.
-
 ```sh title=".env"
 JWT_SECRET=your-secret \
 CADDY_PORT=80 \
@@ -54,6 +52,8 @@ PG_PASS=supersecret \
 POSTGREST_AUTHENTICATOR_PASS=supersecret \
 docker compose up -d
 ```
+
+> 💡 Avoid leaking secrets by disabling shell history.
 
 Alternatively, use environment injection in your CI/CD.
 
