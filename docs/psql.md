@@ -29,7 +29,7 @@ app=#
 
 You can also run SQL directly without opening an interactive shell:
 
-```
+```sh
 bin/postgres -c 'select * from movie;'
 ```
 
@@ -72,7 +72,7 @@ set editing-mode vi
 Add to your `compose.override.yaml` (this file is for development-only
 overriding of `compose.yaml`):
 
-```yaml
+```yaml title="compose.override.yaml"
 services:
   postgres:
     volumes:

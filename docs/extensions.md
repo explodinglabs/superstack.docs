@@ -16,10 +16,9 @@ git clone https://github.com/michelp/pgjwt postgres/pgjwt
 
 ### 2. Modify the Postgres Dockerfile
 
-Edit `postgres/Dockerfile` to install build tools and compile the
-extension:
+Edit the Postgres Dockerfile to install build tools and compile the extension:
 
-```
+```dockerfile title="postgres/Dockerfile"
 RUN apt-get update && apt-get install -y \
     build-essential \
     postgresql-server-dev-17
