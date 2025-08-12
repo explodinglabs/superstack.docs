@@ -32,11 +32,20 @@ To apply your migrations, run:
 bin/postgres migrate
 ```
 
+This command will:
+Apply new migrations – runs any migration files (in filename order) that haven’t been applied yet.
+Record applied migrations – logs each successfully applied migration in a .applied_migrations file so it won’t run again.
+Persist migration history with your database – the .applied_migrations file lives inside the postgres_data Docker volume alongside the database files.
+If the postgres_data volume is deleted or recreated, both the database and the migration history are reset, so migrations will run again from scratch.
+
 This will:
 
-1. Run any migration files that haven’t been applied yet (in filename order)
-2. Record each successfully applied file in `.applied_migrations` (this
-   file lives in the postgres data volume)
+1. **Apply new migrations,** in filename order.
+2. **Record applied migrations** in a file named `.applied_migrations`. This
+   plain-text file keeps a record of successfully applied migrations so they
+   aren't applied again next time. It lives in the same volume as the database
+   files, so when that volume is removed or recreated, the
+   `.applied_migrations` file goes with it and you start over.
 
 Already-applied scripts are skipped on subsequent runs.
 
@@ -63,9 +72,9 @@ commit;
 
 ## 🔁 Transactions
 
-Use `begin;` and `commit;` to wrap statements in a transaction. This
-ensures that all changes are applied atomically. Any statements outside of
-transactions will be auto-committed.
+Use `begin;` and `commit;` to wrap statements in a transaction. This ensures
+that all changes are applied atomically. Any statements outside of transactions
+will be auto-committed.
 
 Avoid wrapping non-transactional operations in a transaction — these will
 cause errors if used inside `begin ... commit`. Examples of
