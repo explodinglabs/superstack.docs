@@ -40,7 +40,7 @@ This will:
 
 Already-applied scripts are skipped on subsequent runs.
 
-> 💡 `bin/postgres` is a small script that basically aliases `docker compose exec postgres`
+> 💡 `bin/postgres` is a small script that effectively aliases `docker compose exec postgres`
 
 Here's an example migration script:
 
