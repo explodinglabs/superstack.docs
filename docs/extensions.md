@@ -45,7 +45,7 @@ That’s it — the extension is now available to load in your migrations.
 
 ## 🔌 Loading an Extension
 
-To load a standard extension (like pgcrypto), create a migration file such as:
+To load extensions, create a migration file such as:
 
 ```sql title="postgres/migrations/01-extensions.sql"
 create extension pgcrypto;
