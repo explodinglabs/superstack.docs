@@ -97,8 +97,8 @@ production):
 
 ```
 01-extensions.sql
-02-create_auth_schema.sql  (if using PostgREST for auth)
-03-create_api_schema.sql
+02-auth_schema.sql  (if using PostgREST for auth)
+03-api_schema.sql
 04-roles.sql
 05-grants.sql
 ```
