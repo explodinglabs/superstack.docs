@@ -87,6 +87,32 @@ REINDEX
 VACUUM
 ```
 
+## Suggested File Layout
+
+SuperStack doesn't require any file names or layout, that's up to you.
+
+But here's one you might use while developing (pre-production):
+
+```
+01-extensions.sql
+02-create_auth_schema.sql  (if using PostgREST for auth)
+03-create_api_schema.sql
+04-roles.sql
+05-grants.sql
+```
+
+During development, make changes and:
+
+```sh
+docker compose down --volumes; docker compose up -d
+```
+
+Once the app's reached production (or some other environment), you can no
+longer keep recreating the database from scratch. Add smaller migrations from
+`06-` onwards, and use `bin/postgres migrate` (that's a shortcut you can use
+locally, on other environments the `bin/postgres` script isn't there so use
+`docker compose exec postgres migrate`).
+
 ## 🔄 Nuke Everything
 
 If you want to start fresh, wipe your database and re-run all migrations from
