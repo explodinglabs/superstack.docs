@@ -1,18 +1,22 @@
 # ☁️ Deploying to Remote Environments
 
-SuperStack is Docker-native, so deployment is simple and portable. Here's
-how to deploy it to a remote server.
+SuperStack is Docker-native, so deployment is simple and portable. Here's how
+to deploy it to a remote server.
 
-## ✅ 1. Set Your Image Names
+A clear goal of SuperStack is that **only `compose.yaml` should be required on
+the remote server**. No other file should need to be copied there.
 
-Change the image names to your own (e.g. using your Docker Hub or GitHub
-Container Registry account) in `compose.yaml`, for example:
+## ✅ 1. Prepare your Images
 
-```yaml
-postgres:
-  image: ghcr.io/youruser/yourapp-postgres
+For services that are built, add `image:` URIs to your own container repository
+(e.g. your Docker Hub or GitHub Container Registry account), for example:
+
+```yaml title="compose.yaml"
 caddy:
   image: ghcr.io/youruser/yourapp-caddy
+
+postgres:
+  image: ghcr.io/youruser/yourapp-postgres
 ```
 
 ## 🛠️ 2. Build and Push your Images
@@ -26,8 +30,7 @@ docker compose push
 
 ## 📦 3. Deploy the Compose File
 
-The only file needed for SuperStack to work on the remote server is
-`compose.yaml`.
+Only `compose.yaml` is required on the remote server.
 
 Copy it to your server:
 
@@ -41,16 +44,16 @@ SSH into your server and bring up the stack.
 
 For production, avoid using `.env` files. Instead, set secrets directly:
 
-```sh
+> 💡 Avoid leaking secrets by disabling shell history.
+
+```sh title=".env"
+JWT_SECRET=your-secret \
 CADDY_PORT=80 \
 PG_USER=admin \
 PG_PASS=supersecret \
 POSTGREST_AUTHENTICATOR_PASS=supersecret \
-JWT_SECRET=your-secret \
 docker compose up -d
 ```
-
-> 💡 Avoid leaking secrets by disabling shell history.
 
 Alternatively, use environment injection in your CI/CD.
 
