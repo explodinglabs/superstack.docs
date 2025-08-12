@@ -85,6 +85,5 @@ services:
 ## 🔁 Step 3: Restart the Postgres container
 
 ```sh
-docker compose down postgres
-docker compose up -d postgres
+docker compose up -d --force-recreate postgres
 ```
