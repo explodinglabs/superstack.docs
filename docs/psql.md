@@ -21,8 +21,9 @@ Type "help" for help.
 app=#
 ```
 
-> 🗒️ **By default, `bin/postgres` opens a `psql` shell.** You can still run
-> other commands (e.g., bin/postgres bash) if needed.
+> 🗒️ By default, `bin/postgres` opens a `psql` shell. You can also run other
+> commands in the container like `bin/postgres bash` if needed, or psql
+> explicitly with `bin/postgres psql`.
 
 ## 🔹 Run Inline SQL Commands
 
