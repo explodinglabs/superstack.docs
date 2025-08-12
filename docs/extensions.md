@@ -3,20 +3,6 @@
 SuperStack supports PostgreSQL extensions, letting you add powerful
 features like cryptographic functions or JWT handling.
 
-## 🔌 Loading a Built-In Extension
-
-To load a standard extension (like pgcrypto), create a migration file such
-as:
-
-```sql
--- File: postgres/migrations/01-extensions.sql
-
-create extension pgcrypto;
-```
-
-> ⚠️ `create extension` is non-transactional, so don’t wrap this in
-> `BEGIN/COMMIT`.
-
 ## 🛠️ Building an Extension from Source
 
 Some extensions (like [pgjwt](https://github.com/michelp/pgjwt)) must be
@@ -56,3 +42,14 @@ docker compose build postgres
 ```
 
 That’s it — the extension is now available to load in your migrations.
+
+## 🔌 Loading an Extension
+
+To load a standard extension (like pgcrypto), create a migration file such as:
+
+```sql title="postgres/migrations/01-extensions.sql"
+create extension pgcrypto;
+```
+
+> ⚠️ `create extension` is non-transactional, so don’t wrap this in
+> `BEGIN/COMMIT`.
