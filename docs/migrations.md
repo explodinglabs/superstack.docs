@@ -89,9 +89,11 @@ VACUUM
 
 ## Suggested File Layout
 
-SuperStack doesn't require any file names or layout, that's up to you.
+SuperStack doesn’t enforce any particular migration file names or layout —
+you’re free to organise them however you like.
 
-But here's one you might use while developing (pre-production):
+Here’s a simple structure you might adopt during development (before
+production):
 
 ```
 01-extensions.sql
@@ -101,17 +103,31 @@ But here's one you might use while developing (pre-production):
 05-grants.sql
 ```
 
-During development, make changes and:
+While developing, you can reset and rebuild the database from scratch as often
+as needed:
 
 ```sh
 docker compose down --volumes; docker compose up -d
 ```
 
-Once the app's reached production (or some other environment), you can no
-longer keep recreating the database from scratch. Add smaller migrations from
-`06-` onwards, and use `bin/postgres migrate` (that's a shortcut you can use
-locally, on other environments the `bin/postgres` script isn't there so use
-`docker compose exec postgres migrate`).
+Once you’ve deployed to production (or another persistent environment), avoid
+recreating the database. Instead:
+
+- Add new migrations starting from `06-...` onwards.
+- Apply them with:
+
+```sh
+bin/postgres migrate
+```
+
+In other environments where `bin/postgres` isn't available:
+
+```sh
+docker compose exec postgres migrate
+```
+
+This approach keeps early development simple while providing a clear, ordered
+history once the database must be preserved.
 
 ## 🔄 Nuke Everything
 
