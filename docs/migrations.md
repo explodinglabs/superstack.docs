@@ -72,18 +72,13 @@ non-transactional statements include:
 
 ```sql
 ALTER SYSTEM
-CLUSTER
 CREATE DATABASE
 CREATE EXTENSION
 CREATE ROLE
 CREATE TABLESPACE
-DISCARD ALL
 DROP DATABASE
 DROP EXTENSION
 DROP TABLESPACE
-LOAD
-REINDEX
-VACUUM
 ```
 
 ## Suggested File Layout
@@ -103,7 +98,8 @@ While developing, you can reset and rebuild the database from scratch as often
 as needed:
 
 ```sh
-docker compose down --volumes; docker compose up -d
+docker compose down --volumes
+docker compose up -d
 ```
 
 Once you’ve deployed to production (or another persistent environment), avoid
@@ -116,7 +112,7 @@ recreating the database. Instead:
 bin/postgres migrate
 ```
 
-In other environments where `bin/postgres` isn't available:
+Or in other environments where `bin/postgres` isn't available:
 
 ```sh
 docker compose exec postgres migrate
