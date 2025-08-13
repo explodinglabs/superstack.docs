@@ -88,10 +88,7 @@ VACUUM
 
 ## Suggested File Layout
 
-SuperStack doesn’t enforce any particular migration file names or layout —
-you’re free to organise them however you like.
-
-Here’s a simple structure you might adopt during development (before
+SuperStack doesn’t enforce any particular migration file names or layout, but here’s a simple structure you might adopt during development (before
 production):
 
 ```
