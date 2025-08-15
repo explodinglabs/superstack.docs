@@ -86,6 +86,21 @@ REINDEX
 VACUUM
 ```
 
+## Environment Variables
+
+Env vars can be used in migrations:
+
+```sql
+\set pgrst_authenticator_pass '$PGRST_AUTHENTICATOR_PASS'
+```
+
+Reduce the chance of environment variables being logged by putting them into
+variables with `\set`, then use the value later:
+
+```sql
+create role authenticator noinherit login password :'pgrst_authenticator_pass';
+```
+
 ## Suggested File Layout
 
 SuperStack doesn’t enforce any particular migration file names or layout —
