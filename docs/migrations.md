@@ -72,18 +72,13 @@ non-transactional statements include:
 
 ```sql
 ALTER SYSTEM
-CLUSTER
 CREATE DATABASE
 CREATE EXTENSION
 CREATE ROLE
 CREATE TABLESPACE
-DISCARD ALL
 DROP DATABASE
 DROP EXTENSION
 DROP TABLESPACE
-LOAD
-REINDEX
-VACUUM
 ```
 
 ## Environment Variables
@@ -103,10 +98,7 @@ create role authenticator noinherit login password :'pgrst_authenticator_pass';
 
 ## Suggested File Layout
 
-SuperStack doesn’t enforce any particular migration file names or layout —
-you’re free to organise them however you like.
-
-Here’s a simple structure you might adopt during development (before
+SuperStack doesn’t enforce any particular migration file names or layout, but here’s a simple structure you might adopt during development (before
 production):
 
 ```
@@ -121,7 +113,8 @@ While developing, you can reset and rebuild the database from scratch as often
 as needed:
 
 ```sh
-docker compose down --volumes; docker compose up -d
+docker compose down --volumes
+docker compose up -d
 ```
 
 Once you’ve deployed to production (or another persistent environment), avoid
@@ -134,7 +127,7 @@ recreating the database. Instead:
 bin/postgres migrate
 ```
 
-In other environments where `bin/postgres` isn't available:
+Or in other environments where `bin/postgres` isn't available:
 
 ```sh
 docker compose exec postgres migrate
