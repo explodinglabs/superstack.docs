@@ -124,14 +124,10 @@ server and routes requests into either the Blue or Green stack.
 On the server, create a simple `Caddyfile`:
 
 ```caddyfile title="Caddyfile"
-api.myapp.com {
-  reverse_proxy blue_caddy:80
-}
+api.myapp.com reverse_proxy blue_caddy:80
 
 # Optionally point a second hostname to the idle stack for testing
-next.myapp.com {
-  reverse_proxy blue_caddy:80
-}
+next.myapp.com reverse_proxy blue_caddy:80
 ```
 
 The front proxy manages TLS, so give it a persistent volume for certificates:
@@ -165,13 +161,8 @@ docker compose -p green up -d
 Edit the front proxy's config to flip traffic:
 
 ```caddyfile title="Caddyfile"
-api.myapp.com {
-  reverse_proxy green_caddy:80
-}
-
-next.myapp.com {
-  reverse_proxy blue_caddy:80
-}
+api.myapp.com reverse_proxy green_caddy:80
+next.myapp.com reverse_proxy blue_caddy:80
 ```
 
 Restart Caddy:
