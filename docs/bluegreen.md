@@ -1,14 +1,6 @@
 # Blue/Green Deployments
 
-Blue/Green is a deployment method where two complete stacks are running
-side-by-side. One is serving production traffic, while the other is idle. You
-deploy to the idle stack, test it, and when you’re ready you swap roles — the
-idle stack becomes production, and the old production becomes idle. This
-provides near-zero downtime and an easy rollback path.
-
-We’ll bring up two stacks, `blue` and `green`, with no ports exposed. A
-separate lightweight front proxy binds to `:80` and `:443` and routes traffic
-to whichever stack is active.
+Blue/Green deployment runs two stacks side-by-side: one live, one idle. You deploy to the idle stack, test it, and when ready, swap roles — giving near-zero downtime and easy rollback.
 
 ## 1. Caddyfile
 
