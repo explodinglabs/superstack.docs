@@ -1,6 +1,8 @@
 # Blue/Green Deployments
 
-Blue/Green deployment runs two stacks side-by-side: one live, one idle. You deploy to the idle stack, test it, and when ready, swap roles — giving near-zero downtime and easy rollback.
+Blue/Green deployment runs two stacks side-by-side: one live, one idle. You
+deploy to the idle stack, test it, and when ready, swap roles — giving
+near-zero downtime and easy rollback.
 
 ## 1. Caddyfile
 
