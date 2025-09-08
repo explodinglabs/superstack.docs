@@ -3,8 +3,8 @@
 SuperStack is Docker-native, so deployment is simple and portable. Here's how
 to deploy it to a remote server.
 
-A clear goal of SuperStack is that **only `compose.yaml` should be required on
-the remote server**. No other file should need to be copied there.
+A goal of SuperStack is that only `compose.yaml` should be required on the
+remote server.
 
 ## ✅ 1. Prepare your Images
 
