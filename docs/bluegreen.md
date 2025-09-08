@@ -35,16 +35,7 @@ volumes:
     name: user-data
 ```
 
-## 2. Start two Stacks
-
-On the server, bring up two stacks, `blue` and `green`:
-
-```sh
-docker compose -p blue up -d
-docker compose -p green up -d
-```
-
-## 3. Front Proxy
+## 2. Front Proxy
 
 The front proxy is a single Caddy container that binds `:80` and `:443` on the
 server and routes requests into either the Blue or Green stack.
@@ -52,16 +43,27 @@ server and routes requests into either the Blue or Green stack.
 On the server, create a simple `Caddyfile`:
 
 ```caddyfile title="Caddyfile"
-api.myapp.com reverse_proxy blue_caddy:80
+api.myapp.com {
+  reverse_proxy blue_caddy:80
+}
 
 # Optionally point a second hostname to the idle stack for testing
-next.myapp.com reverse_proxy blue_caddy:80
+next.myapp.com {
+  reverse_proxy green_caddy:80
+}
 ```
 
 The front proxy manages TLS, so give it a persistent volume for certificates:
 
 ```sh
 docker volume create caddy_data
+```
+
+Create networks for the two stacks:
+
+```sh
+docker network create blue_default
+docker network create green_default
 ```
 
 Start the proxy and attach it to both networks:
@@ -89,8 +91,13 @@ docker compose -p green up -d
 Edit the front proxy's config to flip traffic:
 
 ```caddyfile title="Caddyfile"
-api.myapp.com reverse_proxy green_caddy:80
-next.myapp.com reverse_proxy blue_caddy:80
+api.myapp.com {
+  reverse_proxy green_caddy:80
+}
+
+next.myapp.com {
+  reverse_proxy blue_caddy:80
+}
 ```
 
 Restart Caddy:
