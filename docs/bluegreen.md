@@ -120,3 +120,82 @@ docker exec front-proxy caddy reload
 Cutover is instant. Green is now live, and Blue is the idle stack.
 
 And rollback is simple: flip the `Caddyfile` back and `caddy reload` again.
+
+## Github Actions
+
+Here's a workflow for B/G deploys:
+
+<details>
+<summary>Click to expand</summary>
+
+```yaml title=".github/workflows/ci.yaml"
+name: Deploy to VPS
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment: production
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Start SSH agent
+        uses: webfactory/ssh-agent@v0.9.0
+        with:
+          ssh-private-key: ${{ secrets.VPS_SSH_KEY }}
+
+      - name: Get the idle stack
+        id: idle
+        run: |
+          ACTIVE=$(ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no \
+            ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }} \
+            'cat active_stack 2>/dev/null || echo blue')
+
+          if [ "$ACTIVE" = "blue" ]; then
+            echo "IDLE=green" >> $GITHUB_OUTPUT
+          else
+            echo "IDLE=blue" >> $GITHUB_OUTPUT
+          fi
+          echo "ACTIVE=$ACTIVE" >> $GITHUB_OUTPUT
+
+      - name: Copy compose.yaml to idle stack
+        uses: appleboy/scp-action@master
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: ${{ secrets.VPS_USER }}
+          port: 22
+          key: ${{ secrets.VPS_SSH_KEY }}
+          source: "compose.yaml"
+          target: "${{ steps.idle.outputs.IDLE }}/"
+
+      - name: Deploy with Docker Compose
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: ${{ secrets.VPS_USER }}
+          key: ${{ secrets.VPS_SSH_KEY }}
+          envs: GHCR_PAT,JWT_SECRET,POSTGRES_USER,PGUSER,POSTGRES_PASSWORD,PGPASS,PGRST_AUTHENTICATOR_PASS
+          script: |
+            set -euo pipefail
+            echo $GHCR_PAT | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+            cd ${{ steps.idle.outputs.IDLE }}
+            docker compose pull -q
+            docker compose up -d
+            echo "${{ steps.idle.outputs.ACTIVE }}" > active_stack
+        env:
+          GHCR_PAT: ${{ secrets.GHCR_PAT }}
+          JWT_SECRET: ${{ secrets.JWT_SECRET }}
+          PGRST_AUTHENTICATOR_PASS: ${{ secrets.PGRST_AUTHENTICATOR_PASS }}
+          PGUSER: ${{ secrets.PGUSER }}
+          PGPASS: ${{ secrets.PGPASS }}
+          POSTGRES_USER: ${{ secrets.POSTGRES_USER }}
+          POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
+```
+
+</details>
