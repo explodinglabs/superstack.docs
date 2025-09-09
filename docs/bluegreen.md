@@ -41,12 +41,9 @@ On the server, create a simple `Caddyfile`:
 api.myapp.com {
   reverse_proxy blue_caddy:80
 }
-
-# Optionally point a second hostname to the idle stack for testing
-next.myapp.com {
-  reverse_proxy green_caddy:80
-}
 ```
+
+Optionally, point a second hostname to the idle stack for testing.
 
 The front proxy manages TLS, so give it a persistent volume for certificates:
 
@@ -100,15 +97,11 @@ different containers, volumes and networks than the `blue` stack.
 
 ### Flip traffic
 
-Point traffic to the `green` stack, and make `blue` idle:
+Point traffic to the `green` stack:
 
 ```caddyfile title="Caddyfile"
 api.myapp.com {
   reverse_proxy green_caddy:80
-}
-
-next.myapp.com {
-  reverse_proxy blue_caddy:80
 }
 ```
 
