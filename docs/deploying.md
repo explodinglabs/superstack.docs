@@ -16,12 +16,12 @@ Container Registry account), for example:
 caddy:
   build:
     context: ./caddy
-  image: ghcr.io/youruser/yourapp-caddy
+  image: ghcr.io/youruser/yourapp-caddy:0.1.0
 
 postgres:
   build:
     context: ./postgres
-  image: ghcr.io/youruser/yourapp-postgres
+  image: ghcr.io/youruser/yourapp-postgres:0.1.0
 ```
 
 ## 🛠️ 2. Build and Push your Images
@@ -35,7 +35,7 @@ docker compose push
 
 ## 📦 3. Deploy the Compose File
 
-Copy `compose.yaml` to your server:
+Copy `compose.yaml` to the server:
 
 ```sh
 scp compose.yaml youruser@yourserver:
@@ -43,22 +43,18 @@ scp compose.yaml youruser@yourserver:
 
 ## 🚀 4. Launch your Stack
 
-SSH into your server and bring up the stack.
+SSH into your server and bring up the stack:
 
-For production, avoid using `.env` files. Instead, set secrets directly:
-
-```sh title=".env"
-JWT_SECRET=your-secret \
-CADDY_PORT=80 \
-PG_USER=admin \
-PG_PASS=supersecret \
-POSTGREST_AUTHENTICATOR_PASS=supersecret \
+```sh
+docker compose pull
 docker compose up -d
 ```
 
-> 💡 Avoid leaking secrets by disabling shell history.
+Docker compose needs secrets, so you have a few options:
 
-Alternatively, use environment injection in your CI/CD.
+1. Write secrets to a `.env` file in plain-text (be sure to `chmod 600 .env`).
+1. Set env vars in the docker compose command
+1. Alternatively, use environment injection in your CI/CD.
 
 ---
 
