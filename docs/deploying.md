@@ -41,7 +41,7 @@ Copy `compose.yaml` to the server:
 scp compose.yaml youruser@yourserver:
 ```
 
-### 4. Secrets
+### 4. Set Secrets
 
 Docker needs your secrets (passwords, keys, etc.). There are a few options:
 
