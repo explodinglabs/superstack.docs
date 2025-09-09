@@ -6,9 +6,13 @@ near-zero downtime and easy rollback.
 
 ## 1. Adjust the Compose file
 
-Remove the Caddy `ports:` section in `compose.yaml`. We'll no longer expose
-ports in the stacks – instead a simple "front proxy" will expose ports and
-proxy to the active stack.
+### Remove exposed ports
+
+We'll no longer expose ports in the stacks, instead a simple "front proxy" will
+sit in front of the two stacks, exposing ports and proxying to the active
+stack. So remove the Caddy service's `ports:` section in `compose.yaml`.
+
+### Serve http-only in the stacks
 
 Set `CADDY_SITE_ADDRESS` to only `:80` (leaving TLS termination to the front
 proxy):
@@ -18,6 +22,8 @@ caddy:
   environment:
     CADDY_SITE_ADDRESS: :80
 ```
+
+### Share volumes between the stacks
 
 To share data between the two stacks (database, uploads, etc.), give volumes
 explicit names:
@@ -30,20 +36,31 @@ volumes:
     name: user-data
 ```
 
-## 2. Bring up both Stacks
+### Make the networks external
 
-```sh
-scp compose.yaml youruser@yourserver:blue/compose.yaml
-scp compose.yaml youruser@yourserver:green/compose.yaml
+The front proxy needs to connect to both `blue_default` and `green_default`
+networks. This makes it easier to start the front proxy regardless of whether
+the stacks are up:
+
+```yaml title="compose.yaml"
+networks:
+  default:
+    external: true
 ```
 
-On the server:
+In the override file, don't use external networks:
+
+```yaml title="compose.override.yaml"
+networks:
+  default:
+    external: false
+```
+
+Shell into the server and manually create the two networks:
 
 ```sh
-cd blue
-docker compose up -d
-cd ../green
-docker compose up -d
+docker network create blue_default
+docker network create green_default
 ```
 
 ## 3. Add a Front Proxy
@@ -80,13 +97,13 @@ docker run -d \
   caddy:2
 ```
 
-## 4. Upgrading
+## 4. Deploying/Upgrading
 
 Deploying is the same as [before](deploying.md), but now we're deploying the
 _idle stack_. For this example, `green` is idle so that's the one we're
 deploying.
 
-Create `blue` and `green` directories on the server and deploy `compose.yaml`
+Create `blue` and `green` directories on the server and copy `compose.yaml`
 into the idle stack's directory:
 
 ```sh
