@@ -12,6 +12,15 @@ We'll no longer expose ports in the stacks, instead a simple "front proxy" will
 sit in front of the two stacks, exposing ports and proxying to the active
 stack. So remove the Caddy service's `ports:` section in `compose.yaml`.
 
+### Set the Caddy container name explicitly
+
+This allows us to switch between the two stacks:
+
+```yaml title="compose.yaml"
+caddy:
+  container_name: ${STACK_NAME}_caddy
+```
+
 ### Serve http-only in the stacks
 
 Set `CADDY_SITE_ADDRESS` to only `:80` (leaving TLS termination to the front
@@ -180,7 +189,7 @@ jobs:
             echo $GHCR_PAT | docker login ghcr.io -u ${{ github.actor }} --password-stdin
             cd ${{ steps.idle.outputs.IDLE }}
             docker compose pull -q
-            docker compose up -d
+            STACK_NAME=${{ steps.idle.outputs.IDLE }} docker compose up -d
             echo "${{ steps.idle.outputs.ACTIVE }}" > active_stack
         env:
           GHCR_PAT: ${{ secrets.GHCR_PAT }}
