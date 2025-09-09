@@ -30,7 +30,23 @@ volumes:
     name: user-data
 ```
 
-## 2. Add a Front Proxy
+## 2. Bring up both Stacks
+
+```sh
+scp compose.yaml youruser@yourserver:blue/compose.yaml
+scp compose.yaml youruser@yourserver:green/compose.yaml
+```
+
+On the server:
+
+```sh
+cd blue
+docker compose up -d
+cd ../green
+docker compose up -d
+```
+
+## 3. Add a Front Proxy
 
 The _front proxy_ is a single container that binds ports `80` and `443` on the
 server and routes requests into either the Blue or Green stack.
@@ -51,14 +67,7 @@ The front proxy manages TLS, so give it a persistent volume for certificates:
 docker volume create caddy_data
 ```
 
-Create networks for the two stacks:
-
-```sh
-docker network create blue_default
-docker network create green_default
-```
-
-Start the proxy and attach it to both networks:
+Start the proxy, attaching it to both networks:
 
 ```sh
 docker run -d \
@@ -71,7 +80,7 @@ docker run -d \
   caddy:2
 ```
 
-## 3. Deploying/Upgrading
+## 4. Upgrading
 
 Deploying is the same as [before](deploying.md), but now we're deploying the
 _idle stack_. For this example, `green` is idle so that's the one we're
