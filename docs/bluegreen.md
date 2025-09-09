@@ -6,8 +6,9 @@ near-zero downtime and easy rollback.
 
 ## 1. Adjust the Compose file
 
-Remove the Caddy `ports:` section in `compose.yaml`. Instead of exposing ports
-in the stacks, a "front proxy" will expose ports and proxy to the active stack.
+Remove the Caddy `ports:` section in `compose.yaml`. We'll no longer expose
+ports in the stacks – instead a simple "front proxy" will expose ports and
+proxy to the active stack.
 
 Set `CADDY_SITE_ADDRESS` to only `:80` (leaving TLS termination to the front
 proxy):
