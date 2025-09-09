@@ -1,12 +1,12 @@
-# Blue/Green Deployments
-
 Blue/Green deployment runs two stacks side-by-side: one live, one idle. You
 deploy to the idle stack, test it, and when ready, swap roles — giving
 near-zero downtime and easy rollback.
 
-## 1. Caddyfile
+![Blue/Green](../assets/bluegreen.png)
 
-Remove the exposed ports from Caddy by removing the `ports:` section in
+## 1. Adjustments to the Compose file
+
+Remove the exposed ports by removing the Caddy `ports:` section in
 `compose.yaml`.
 
 Set `CADDY_SITE_ADDRESS` to only `:80` (leaving TLS termination to the front
@@ -29,7 +29,7 @@ volumes:
     name: user-data
 ```
 
-## 2. Front Proxy
+## 2. Add a Front Proxy
 
 The front proxy is a single Caddy container that binds `:80` and `:443` on the
 server and routes requests into either the Blue or Green stack.
