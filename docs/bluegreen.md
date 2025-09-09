@@ -31,8 +31,8 @@ volumes:
 
 ## 2. Add a Front Proxy
 
-The front proxy is a single Caddy container that binds `:80` and `:443` on the
-server and routes requests into either the Blue or Green stack.
+The front proxy is a single container that binds `:80` and `:443` on the server
+and routes requests into either the Blue or Green stack.
 
 On the server, create a simple `Caddyfile`:
 
