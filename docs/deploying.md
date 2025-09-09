@@ -41,7 +41,17 @@ Copy `compose.yaml` to the server:
 scp compose.yaml youruser@yourserver:
 ```
 
-## 🚀 4. Launch your Stack
+### 4. Secrets
+
+Docker needs your secrets (passwords, keys, etc.). There are a few options:
+
+1. Write secrets to a `.env` file on the server (convenient but not very
+   secure).
+1. Set env vars in the the `docker compose` command (be sure to disable shell
+   history).
+1. Use environment injection in your CI/CD.
+
+## 🚀 5. Launch your Stack
 
 SSH into your server and bring up the stack:
 
@@ -49,12 +59,6 @@ SSH into your server and bring up the stack:
 docker compose pull
 docker compose up -d
 ```
-
-Docker compose needs secrets, so you have a few options:
-
-1. Write secrets to a `.env` file in plain-text (be sure to `chmod 600 .env`).
-1. Set env vars in the docker compose command
-1. Alternatively, use environment injection in your CI/CD.
 
 ---
 
