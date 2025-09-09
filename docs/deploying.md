@@ -45,11 +45,10 @@ scp compose.yaml youruser@yourserver:
 
 Docker needs your secrets (passwords, keys, etc.). There are a few options:
 
-1. Write secrets to a `.env` file on the server (convenient but not very
-   secure).
-1. Set env vars in the the `docker compose` command (be sure to disable shell
-   history).
-1. Use environment injection in your CI/CD.
+1. Write secrets to a `.env` file on the server (convenient but not secure).
+1. Set environment variables in the the `docker compose` command (be sure to
+   disable shell history) - inconvenient.
+1. Use environment injection in your CI/CD. (Recommended)
 
 ## 🚀 5. Launch your Stack
 
