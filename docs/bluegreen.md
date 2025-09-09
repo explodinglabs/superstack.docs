@@ -36,33 +36,6 @@ volumes:
     name: user-data
 ```
 
-### Make the networks external
-
-The front proxy needs to connect to both `blue_default` and `green_default`
-networks. This makes it easier to start the front proxy regardless of whether
-the stacks are up:
-
-```yaml title="compose.yaml"
-networks:
-  default:
-    external: true
-```
-
-In the override file, don't use external networks:
-
-```yaml title="compose.override.yaml"
-networks:
-  default:
-    external: false
-```
-
-Shell into the server and manually create the two networks:
-
-```sh
-docker network create blue_default
-docker network create green_default
-```
-
 ## 3. Add a Front Proxy
 
 The _front proxy_ is a single container that binds ports `80` and `443` on the
@@ -84,7 +57,8 @@ The front proxy manages TLS, so give it a persistent volume for certificates:
 docker volume create caddy_data
 ```
 
-Start the proxy, attaching it to both networks:
+Start the proxy, attaching it to both networks – this requires both stacks to
+be up first, so the networks exist:
 
 ```sh
 docker run -d \
