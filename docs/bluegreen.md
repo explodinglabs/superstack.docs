@@ -12,22 +12,8 @@ stack", now there is:
 3. A front proxy to direct traffic
 4. An external Postgres.
 
-## 1. Create a Docker Network
 
-Create a network to link them:
 
-```sh
-docker network create app
-```
-
-And add it to the Compose file:
-
-```yaml title="compose.yaml"
-networks:
-  default:
-    name: app
-    external: true
-```
 
 ## 2. Adjust Caddy
 
@@ -65,6 +51,29 @@ It's not advised to run two separate PostgreSQL instances and having them both s
 access the same shared volume.
 
 So we need to move Postgres out of the compose file and start it separately.
+
+Create a network:
+
+```sh
+docker network create shared
+```
+
+And add it to the Compose file:
+
+```yaml title="compose.yaml"
+networks:
+  shared:
+    name: shared
+    external: true
+```
+
+then in services that need db access:
+
+```yaml title="compose.yaml"
+networks:
+  - default
+  - shared
+```
 
 ## 3. Volumes
 
