@@ -9,14 +9,14 @@ stack", now there is:
 
 1. A `blue` stack
 2. A `green` stack
-3. A front proxy to direct traffic
+3. A proxy to direct traffic
 4. An external Postgres.
 
 ## 2. Adjust Caddy
 
 ### Name the Caddy containers
 
-Naming the Caddy containers `blue_caddy` and `green_caddy` allows the front
+Naming the Caddy containers `blue_caddy` and `green_caddy` allows the
 proxy to direct traffic to the correct stacks:
 
 ```yaml title="compose.yaml"
@@ -26,7 +26,7 @@ caddy:
 
 ### Remove exposed ports
 
-We'll no longer expose ports in the stacks, instead a front proxy will sit in
+We'll no longer expose ports in the stacks, instead a proxy will sit in
 front of the two stacks, proxying to them.
 
 So remove the `caddy` service's `ports:` section in `compose.yaml`.
@@ -34,7 +34,7 @@ So remove the `caddy` service's `ports:` section in `compose.yaml`.
 ### Serve HTTP-only in the stacks
 
 Set `CADDY_SITE_ADDRESS` to only `:80`, removing `:443` (leaving TLS
-termination to the front proxy):
+termination to the proxy):
 
 ```yaml title="compose.yaml"
 caddy:
@@ -109,9 +109,9 @@ STACK_NAME=green docker compose up -d
 Docker will use the directory name `green` as the project name, creating
 different containers, volumes and networks than the `blue` stack.
 
-## 5. Add a Front Proxy
+## 5. Add a Proxy
 
-The _front proxy_ is a single container that binds ports `80` and `443` on the
+The proxy is a single container that binds ports `80` and `443` on the
 server and routes requests into either the Blue or Green stack.
 
 On the server, create a simple `Caddyfile`:
@@ -156,7 +156,7 @@ api.myapp.com {
 }
 ```
 
-Reload the front proxy's config:
+Reload the proxy's config:
 
 ```sh
 docker exec front-proxy caddy reload
