@@ -13,6 +13,17 @@ Remove the `caddy` service's `ports:` section in `compose.yaml`.
 We'll no longer expose ports in the stacks, instead a simple "front proxy" will
 sit in front of the two stacks, proxying to the active stack.
 
+### Serve HTTP-only in the stacks
+
+Set `CADDY_SITE_ADDRESS` to only `:80`, removing `:443` (leaving TLS
+termination to the front proxy):
+
+```yaml title="compose.yaml"
+caddy:
+  environment:
+    CADDY_SITE_ADDRESS: :80
+```
+
 ### Set the Caddy container name explicitly
 
 This allows us to switch between the two stacks:
@@ -20,17 +31,6 @@ This allows us to switch between the two stacks:
 ```yaml title="compose.yaml"
 caddy:
   container_name: ${STACK_NAME}_caddy
-```
-
-### Serve http-only in the stacks
-
-Set `CADDY_SITE_ADDRESS` to only `:80` (leaving TLS termination to the front
-proxy):
-
-```yaml title="compose.yaml"
-caddy:
-  environment:
-    CADDY_SITE_ADDRESS: :80
 ```
 
 ### Move Postgres to its own unique container
