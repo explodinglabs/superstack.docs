@@ -6,6 +6,15 @@ near-zero downtime and easy rollback.
 
 ## 1. Caddy
 
+### Set the Caddy container name explicitly
+
+This allows us to switch between the two stacks:
+
+```yaml title="compose.yaml"
+caddy:
+  container_name: ${STACK_NAME}_caddy
+```
+
 ### Remove exposed ports
 
 Remove the `caddy` service's `ports:` section in `compose.yaml`.
@@ -22,15 +31,6 @@ termination to the front proxy):
 caddy:
   environment:
     CADDY_SITE_ADDRESS: :80
-```
-
-### Set the Caddy container name explicitly
-
-This allows us to switch between the two stacks:
-
-```yaml title="compose.yaml"
-caddy:
-  container_name: ${STACK_NAME}_caddy
 ```
 
 ## 2. Postgres
