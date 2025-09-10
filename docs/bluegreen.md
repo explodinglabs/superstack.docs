@@ -4,14 +4,38 @@ near-zero downtime and easy rollback.
 
 ![Blue/Green](assets/bluegreen.png)
 
+## Network
+
+We'll have a few concerns:
+
+1. A blue stack
+2. A green stack
+3. A front proxy
+4. Postgres
+
+Create a network to link them:
+
+```sh
+docker network create myapp
+```
+
+And add it to the Compose file:
+
+```yaml title="compose.yaml"
+networks:
+  default:
+    name: myapp
+    external: true
+```
+
 ## 1. Adjust the Compose file
 
 ### Remove exposed ports
 
 Remove the `caddy` service's `ports:` section in `compose.yaml`.
 
-We'll no longer expose ports in the stacks, instead a simple "front proxy" will
-sit in front of the two stacks, proxying to the active stack.
+We'll no longer expose ports in the stacks, instead the front proxy will sit in
+front of the two stacks, proxying to them.
 
 ### Serve HTTP-only in the stacks
 
