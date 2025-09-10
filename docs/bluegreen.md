@@ -1,11 +1,11 @@
-![Blue/Green](assets/bluegreen.png)
-
 Blue/Green deployment runs two stacks side-by-side: one live, one idle. You
 deploy to the idle stack, test it, and when ready, swap roles — giving
 near-zero downtime and easy rollback.
 
+![Blue/Green](assets/bluegreen.png)
+
 Blue/Green adds some complexity because where before there was just "the
-stack", now you have:
+stack", now there is:
 
 1. A `blue` stack
 2. A `green` stack
