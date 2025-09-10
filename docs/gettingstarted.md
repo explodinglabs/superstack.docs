@@ -58,11 +58,7 @@ Copy the example environment file:
 cp example.env .env
 ```
 
-This `.env` file is used to configure:
-
-- **Secrets** – Passwords, keys, etc.
-- **Ports** – Adjust the exposed ports (specifically, Caddy's) depending on
-  environment or application (you may bring up multiple).
+This `.env` file is used to set secrets, passwords, keys, etc.
 
 > ⚠️ Never store secrets in version control.
 
