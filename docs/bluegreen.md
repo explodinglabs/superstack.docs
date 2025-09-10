@@ -33,15 +33,21 @@ caddy:
     CADDY_SITE_ADDRESS: :80
 ```
 
+### Move Postgres to its own unique container
+
+Running two separate PostgreSQL instances and having them both simultaneously
+access the same data directory within that shared volume is not recommended and
+can lead to data corruption.
+
+So we need to move Postgres out of the compose file and start it separately.
+
 ### Share volumes between the stacks
 
-To share data between the two stacks (database, uploads, etc.), give volumes
-explicit names:
+To share data between the two stacks (uploads, etc.), give volumes explicit
+names:
 
 ```yaml title="compose.yaml"
 volumes:
-  postgres_data:
-    name: postgres-data
   user_data:
     name: user-data
 ```
