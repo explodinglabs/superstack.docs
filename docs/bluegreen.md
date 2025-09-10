@@ -4,19 +4,20 @@ near-zero downtime and easy rollback.
 
 ![Blue/Green](assets/bluegreen.png)
 
-## Network
+## 1. Create a Docker Network
 
-We'll have a few concerns:
+Blue/Green adds some complexity because where before there was just "the
+stack", now you have:
 
-1. A blue stack
-2. A green stack
-3. A front proxy
-4. Postgres
+1. A `blue` stack
+2. A `green` stack
+3. A front proxy to direct traffic
+4. An external Postgres.
 
 Create a network to link them:
 
 ```sh
-docker network create myapp
+docker network create app
 ```
 
 And add it to the Compose file:
@@ -24,18 +25,28 @@ And add it to the Compose file:
 ```yaml title="compose.yaml"
 networks:
   default:
-    name: myapp
+    name: app
     external: true
 ```
 
-## 1. Adjust the Compose file
+## 2. Adjust Caddy
+
+### Name the Caddy containers
+
+Naming the Caddy containers `blue_caddy` and `green_caddy` allows the front
+proxy to direct traffic to the correct stacks:
+
+```yaml title="compose.yaml"
+caddy:
+  container_name: ${STACK_NAME}_caddy
+```
 
 ### Remove exposed ports
 
-Remove the `caddy` service's `ports:` section in `compose.yaml`.
-
-We'll no longer expose ports in the stacks, instead the front proxy will sit in
+We'll no longer expose ports in the stacks, instead a front proxy will sit in
 front of the two stacks, proxying to them.
+
+So remove the `caddy` service's `ports:` section in `compose.yaml`.
 
 ### Serve HTTP-only in the stacks
 
@@ -48,24 +59,14 @@ caddy:
     CADDY_SITE_ADDRESS: :80
 ```
 
-### Set the Caddy container name explicitly
+## 2. Postgres
 
-This allows us to switch between the two stacks:
-
-```yaml title="compose.yaml"
-caddy:
-  container_name: ${STACK_NAME}_caddy
-```
-
-### Move Postgres to its own unique container
-
-Running two separate PostgreSQL instances and having them both simultaneously
-access the same data directory within that shared volume is not recommended and
-can lead to data corruption.
+It's not advised to run two separate PostgreSQL instances and having them both simultaneously
+access the same shared volume.
 
 So we need to move Postgres out of the compose file and start it separately.
 
-### Share volumes between the stacks
+## 3. Volumes
 
 To share data between the two stacks (uploads, etc.), give volumes explicit
 names:
@@ -76,7 +77,7 @@ volumes:
     name: user-data
 ```
 
-## 3. Bring up two Stacks
+## 4. Bring up two Stacks
 
 Deploying is the same as [before](deploying.md), but now we're deploying the
 _idle stack_. For this example, `green` is idle so that's the one we're
@@ -94,13 +95,13 @@ Shell into the server and bring up the idle stack:
 ```sh
 cd green
 docker compose pull
-docker compose up -d
+STACK_NAME=green docker compose up -d
 ```
 
 Docker will use the directory name `green` as the project name, creating
 different containers, volumes and networks than the `blue` stack.
 
-## 3. Add a Front Proxy
+## 5. Add a Front Proxy
 
 The _front proxy_ is a single container that binds ports `80` and `443` on the
 server and routes requests into either the Blue or Green stack.
@@ -135,7 +136,7 @@ docker run -d \
   caddy:2
 ```
 
-## 4. Upgrading
+## 6. Upgrading
 
 ## Flip traffic
 
