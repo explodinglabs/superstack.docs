@@ -4,7 +4,7 @@ near-zero downtime and easy rollback.
 
 ![Blue/Green](assets/bluegreen.png)
 
-## 1. Adjust the Compose file
+## 1. Caddy
 
 ### Remove exposed ports
 
@@ -33,7 +33,7 @@ caddy:
   container_name: ${STACK_NAME}_caddy
 ```
 
-### Move Postgres to its own unique container
+## Postgres
 
 Running two separate PostgreSQL instances and having them both simultaneously
 access the same data directory within that shared volume is not recommended and
