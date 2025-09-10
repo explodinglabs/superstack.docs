@@ -35,9 +35,8 @@ caddy:
 
 ## 2. Postgres
 
-Running two separate PostgreSQL instances and having them both simultaneously
-access the same data directory within that shared volume is not recommended and
-can lead to data corruption.
+It's not advised to run two separate PostgreSQL instances and having them both simultaneously
+access the same shared volume.
 
 So we need to move Postgres out of the compose file and start it separately.
 
