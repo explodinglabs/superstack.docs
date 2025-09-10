@@ -196,4 +196,23 @@ jobs:
           GHCR_PAT: ${{ secrets.GHCR_PAT }}
 ```
 
+If you want to auto-flip between blue and green, add this extra task:
+
+```yaml
+- name: Flip traffic
+  uses: appleboy/ssh-action@v1.0.3
+  with:
+    host: ${{ secrets.VPS_HOST }}
+    username: ${{ secrets.VPS_USER }}
+    key: ${{ secrets.VPS_SSH_KEY }}
+    script: |
+      if [ "${{ steps.idle.outputs.IDLE }}" = "blue" ]; then
+        sed -i 's/green_caddy/blue_caddy/g' caddy/Caddyfile
+      else
+        sed -i 's/blue_caddy/green_caddy/g' caddy/Caddyfile
+      fi
+      docker exec front-proxy caddy reload --config /etc/caddy/Caddyfile
+      echo "${{ steps.idle.outputs.IDLE }}" > active_stack
+```
+
 </details>
