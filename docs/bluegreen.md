@@ -33,7 +33,7 @@ caddy:
   container_name: ${STACK_NAME}_caddy
 ```
 
-## Postgres
+## 2. Postgres
 
 Running two separate PostgreSQL instances and having them both simultaneously
 access the same data directory within that shared volume is not recommended and
@@ -41,7 +41,7 @@ can lead to data corruption.
 
 So we need to move Postgres out of the compose file and start it separately.
 
-### Share volumes between the stacks
+## 3. Volumes
 
 To share data between the two stacks (uploads, etc.), give volumes explicit
 names:
@@ -52,7 +52,7 @@ volumes:
     name: user-data
 ```
 
-## 3. Bring up two Stacks
+## 4. Bring up two Stacks
 
 Deploying is the same as [before](deploying.md), but now we're deploying the
 _idle stack_. For this example, `green` is idle so that's the one we're
@@ -76,7 +76,7 @@ docker compose up -d
 Docker will use the directory name `green` as the project name, creating
 different containers, volumes and networks than the `blue` stack.
 
-## 3. Add a Front Proxy
+## 5. Add a Front Proxy
 
 The _front proxy_ is a single container that binds ports `80` and `443` on the
 server and routes requests into either the Blue or Green stack.
@@ -111,7 +111,7 @@ docker run -d \
   caddy:2
 ```
 
-## 4. Upgrading
+## 6. Upgrading
 
 ## Flip traffic
 
