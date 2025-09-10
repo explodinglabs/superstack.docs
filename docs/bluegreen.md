@@ -12,9 +12,6 @@ stack", now there is:
 3. A front proxy to direct traffic
 4. An external Postgres.
 
-
-
-
 ## 2. Adjust Caddy
 
 ### Name the Caddy containers
@@ -67,13 +64,15 @@ networks:
     external: true
 ```
 
-then in services that need db access:
+Then in services that need db access:
 
 ```yaml title="compose.yaml"
 networks:
-  - default
   - shared
 ```
+
+Move Postgres out of compose.yaml into a shared-compose.yaml, adding the `shared` network:
+
 
 ## 3. Volumes
 
