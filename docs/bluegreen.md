@@ -1,4 +1,4 @@
-> This page is a work in progress, I'm working on it - Beau
+> This page is a work in progress – Beau
 
 _Blue/Green deployment_ runs two stacks side-by-side: one live, one idle. You
 deploy to the idle stack, test it, and when ready, swap roles. It gives
