@@ -1,5 +1,8 @@
-Blue/Green deployment runs two stacks side-by-side: one live, one idle. You
-deploy to the idle stack, test it, and when ready, swap roles — giving
+> ![NOTE]
+> This page is a work in progress, I'm working on it - Beau
+
+_Blue/Green deployment_ runs two stacks side-by-side: one live, one idle. You
+deploy to the idle stack, test it, and when ready, swap roles. It gives
 near-zero downtime and easy rollback.
 
 ![Blue/Green](assets/bluegreen.png)
@@ -10,14 +13,14 @@ stack", now there is:
 1. A `blue` stack
 2. A `green` stack
 3. A proxy to direct traffic
-4. An external Postgres.
+4. An external Postgres container.
 
-## 2. Adjust Caddy
+## 1. Caddy Adjustments
 
 ### Name the Caddy containers
 
-Naming the Caddy containers `blue_caddy` and `green_caddy` allows the
-proxy to direct traffic to the correct stacks:
+Naming the Caddy containers `blue_caddy` and `green_caddy` allows the proxy to
+direct traffic to the correct stacks:
 
 ```yaml title="compose.yaml"
 caddy:
@@ -26,15 +29,15 @@ caddy:
 
 ### Remove exposed ports
 
-We'll no longer expose ports in the stacks, instead a proxy will sit in
-front of the two stacks, proxying to them.
+We'll no longer expose ports in our stacks. Instead a proxy will sit in front
+of the two stacks, proxying to them.
 
-So remove the `caddy` service's `ports:` section in `compose.yaml`.
+Remove the Caddy service's `ports:` section in `compose.yaml`.
 
 ### Serve HTTP-only in the stacks
 
-Set `CADDY_SITE_ADDRESS` to only `:80`, removing `:443` (leaving TLS
-termination to the proxy):
+Set `CADDY_SITE_ADDRESS` to only `:80`, removing `:443`, leaving TLS
+termination to the proxy:
 
 ```yaml title="compose.yaml"
 caddy:
@@ -44,35 +47,35 @@ caddy:
 
 ## 2. Postgres
 
-It's not advised to run two separate PostgreSQL instances and having them both simultaneously
-access the same shared volume.
+In regular SuperStack, Postgres comes up with the stack. But now we're bringing
+up two stacks, we can't have two Postgres containers both simultaneously
+accessing the same shared volume. We need a single Postgres container, separate
+from the stacks.
 
-So we need to move Postgres out of the compose file and start it separately.
+Add a profile to the Postgres service:
 
-Create a network:
-
-```sh
-docker network create shared
+```yaml title="compose.yaml"
+postgres:
+  profiles: ["db"]
 ```
 
-And add it to the Compose file:
+Add it to the Compose file:
 
 ```yaml title="compose.yaml"
 networks:
-  shared:
-    name: shared
+  postgres:
+    name: postgres
     external: true
 ```
 
-Then in services that need db access:
+Then in services that need database access (such as PostgREST):
 
 ```yaml title="compose.yaml"
 networks:
-  - shared
+  - postgres
 ```
 
 Move Postgres out of compose.yaml into a shared-compose.yaml, adding the `shared` network:
-
 
 ## 3. Volumes
 
