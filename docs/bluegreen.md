@@ -1,4 +1,3 @@
-> ![NOTE]
 > This page is a work in progress, I'm working on it - Beau
 
 _Blue/Green deployment_ runs two stacks side-by-side: one live, one idle. You
