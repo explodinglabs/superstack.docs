@@ -35,7 +35,7 @@ building.
 It's perfect for:
 
 - 🧱 Building SaaS apps
-- 💻 Running multiple stacks locally
+- 💻 Running multiple stacks (locally and remotely)
 - 📦 Easy database migrations
 - 🔧 Customizing your toolchain
 

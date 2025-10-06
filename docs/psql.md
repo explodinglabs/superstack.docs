@@ -4,6 +4,16 @@
 SuperStack makes it easy to run psql inside the container using a helper
 script.
 
+Postgres clients need credentials, one way is to add these to the Compose file:
+
+```yaml title="db/compose.yaml"
+postgres:
+  environment:
+    PGUSER: ${POSTGRES_USER:?}
+    PGPASSWORD: ${POSTGRES_PASSWORD:?}
+    PGDATABASE: app
+```
+
 ## 📟 Open a psql Shell
 
 To connect interactively:
