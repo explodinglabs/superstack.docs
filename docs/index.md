@@ -21,7 +21,7 @@
 Jump to:
 [GitHub](https://github.com/explodinglabs/superstack) | [Developer Wiki](https://github.com/explodinglabs/superstack/wiki)
 
-_SuperStack_ is a minimal, modular backend powered by PostgreSQL — perfect for
+_SuperStack_ is a minimal, modular backend powered by Docker — perfect for
 indie developers, SaaS builders, and teams who want full control without the
 bloat.
 
