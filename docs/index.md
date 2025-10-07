@@ -35,23 +35,12 @@ building.
 It's perfect for:
 
 - 🧱 Building SaaS apps
-- 💻 Running multiple stacks (locally and remotely)
+- 💻 Running multiple stacks
 - 📦 Easy database migrations
 - 🔧 Customizing your toolchain
 
 Everything runs inside Docker and routes through a single exposed port (via
 Caddy), making it easy to develop locally or deploy remotely.
-
----
-
-## 🏛️ Architecture
-
-```mermaid
-flowchart TD
-    APIGateway["API Gateway (Caddy)"]
-    APIGateway --> Services["Services (PostgREST, + add more)"]
-    Services --> Database["Database (Postgres)"]
-```
 
 ---
 
