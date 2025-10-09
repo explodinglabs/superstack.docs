@@ -41,42 +41,7 @@ flowchart TD
 
 Ok, we need to make some changes to the repository.
 
-## 1. Adjust the Application
-
-Remove the app's exposed ports, and connect to the proxy's network:
-
-```yaml title="app/compose.yaml" hl_lines="5-11 13-15"
-services:
-  caddy:
-    build:
-      context: ./caddy
-    environment:
-      CADDY_SITE_ADDRESS: ":80"
-    networks:
-      default:
-      proxy_default:
-        aliases:
-          - ${COMPOSE_PROJECT_NAME}_caddy
-
-networks:
-  proxy_default:
-    external: true
-```
-
-What's changed?
-
-1. The exposed ports were removed.
-1. Caddy's site address has changed to `:80` (The application layer no longer
-   handles TLS).
-1. We connect to the proxy's network, so the proxy can direct traffic to the
-   app.
-1. A container alias was added. This alias allows the proxy to target this
-   container, while still allowing Docker to manage the container name.
-
-The `CADDY_SITE_ADDRESS` environment variable can be removed from the override
-file.
-
-## 2. Start a new `proxy` project
+## 1. Create a new `proxy` project
 
 From the root of the repository, create a new `proxy` project:
 
@@ -137,14 +102,52 @@ FROM caddy:2
 COPY Caddyfile /etc/caddy/Caddyfile
 ```
 
-## Start the services
-
-Start the proxy first, then the app which connects to its network.
+Start the proxy service:
 
 ```yaml
-cd proxy && docker compose up -d
-cd ../app && docker compose up -d
+docker compose up -d
 ```
+
+## 2. Adjust the Application
+
+Remove the app's exposed ports, and connect to the proxy's network:
+
+```yaml title="app/compose.yaml" hl_lines="5-11 13-15"
+services:
+  caddy:
+    build:
+      context: ./caddy
+    environment:
+      CADDY_SITE_ADDRESS: ":80"
+    networks:
+      default:
+      proxy_default:
+        aliases:
+          - ${COMPOSE_PROJECT_NAME}_caddy
+
+networks:
+  proxy_default:
+    external: true
+```
+
+What's changed?
+
+1. The exposed ports were removed.
+1. Caddy's site address has changed to `:80` (The application layer no longer
+   handles TLS).
+1. We connect to the proxy's network, so the proxy can direct traffic to the
+   app.
+1. A container alias was added. This alias allows the proxy to target this
+   container, while still allowing Docker to manage the container name.
+
+The `CADDY_SITE_ADDRESS` environment variable can be removed from the override
+file.
+
+```sh
+docker compose up -d app
+```
+
+Commit these changes.
 
 ## Deploying
 
