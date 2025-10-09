@@ -63,5 +63,4 @@ Your backend is now live. 🚀
 This setup replaces the stack in place.
 
 If you want zero-downtime deployments, rollback support, or blue-green testing,
-see the Wiki page: [Advanced
-Deployments](https://github.com/explodinlabs/superstack/wiki).
+continue reading to [Advanced Deployments](advanced.md).

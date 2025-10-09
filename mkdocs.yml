@@ -49,3 +49,4 @@ nav:
   - Home: index.md
   - Getting Started: gettingstarted.md
   - Deploying to Remote Environments: deploy.md
+  - Advanced Deployments: advanced.md
