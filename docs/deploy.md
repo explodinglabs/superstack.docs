@@ -31,17 +31,17 @@ Copy your `compose.yaml` to the remote host:
 scp compose.yaml youruser@yourserver:
 ```
 
-### 3. Set Secrets
+## 3. Set Secrets
 
 Your app will need credentials such as database passwords or API keys. Choose
 one of these approaches:
 
 1. **`.env` file** — simply place a `.env` file alongside your `compose.yaml`.
    Be sure to `chmod 600 .env`.
-2. **Environment variables** — pass them directly to the command line.
+2. **Environment variables** — pass secrets directly to the command line.
 3. **CI/CD injection** — good for automated pipelines.
 
-## 🚀 Launch the App
+## 🚀 3. Launch the App
 
 Start the application on the server:
 
@@ -56,7 +56,5 @@ Your backend is now live. 🚀
 
 ## 🧭 Next Steps
 
-This setup replaces the stack in place.
-
 If you want zero-downtime deployments, rollback support, or blue-green testing,
-continue reading to [Advanced Deployments](advanced.md).
+continue to [Advanced Deployments](advanced.md).

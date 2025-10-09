@@ -1,15 +1,83 @@
-A new `proxy` service is added to direct traffic.
+The standard SuperStack replaces the stack in place.
+
+- There's some downtime while upgrading.
+- You can't test one app while another is live (blue/green)
+- Once an app is upgrade, you can't rollback.
+
+Once your app is ready for production, consider adding a traffic-switcher in
+front of your app.
+
+How it works:
+
+- We stop exposing ports in the `app` project.
+- A new `proxy` project is added, with ports open.
+- It's purpose is to direct traffic to the right application.
+- Apps are deployed completely separate to the live one.
+
+This way, environments are _ephemeral, immutable and idempotent_.
+
+The directory structure looks like:
 
 ```
 proxy/
   compose.yaml
 app/
-  ...
+  a/
+    compose.yaml
+    .env
+  b/
+    compose.yaml
+    .env
 ```
 
-## 1. Update Application
+## 1. Create a new project
 
-Remove the exposed ports, and connect to the proxy's network:
+From the root of the repository, create a new `proxy` project:
+
+```sh
+mkdir proxy
+```
+
+Add a compose file:
+
+```yaml title="proxy/compose.yaml"
+services:
+  caddy:
+    build:
+      context: ./caddy
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - caddy_data:/data
+    environment:
+      CADDY_SITE_ADDRESS: api.myapp.com
+
+volumes:
+  caddy_data:
+    name: caddy-data # The proxy manages TLS, so give it a persistent volume for certificates
+```
+
+```yaml title="proxy/compose.override.yaml"
+# Development overrides
+
+services:
+  caddy:
+    ports:
+      - "8000:80"
+    environment:
+      CADDY_SITE_ADDRESS: :80
+```
+
+```yaml title="proxy/caddy/Caddyfile"
+{$CADDY_SITE_ADDRESS}
+
+reverse_proxy app_caddy:80
+```
+
+## 2. Update the Application
+
+Remove the app's exposed ports, and connect to the proxy's network:
 
 ```yaml title="app/compose.yaml" hl_lines="6-13,15-17"
 services:
@@ -31,9 +99,7 @@ networks:
     external: true
 ```
 
-**app/compose.override.yaml**
-
-```yaml
+```yaml title="app/compose.override.yaml"
 # Development overrides
 
 services:
@@ -42,67 +108,9 @@ services:
       - ./caddy/Caddyfile:/etc/caddy/Caddyfile:ro
 ```
 
-## 1. Add a traffic-switcher proxy service
+## Deploy the Proxy
 
-**proxy/compose.yaml**
-
-```yaml
-services:
-  caddy:
-    build:
-      context: ./caddy
-    ports:
-      - "80:80"
-      - "443:443"
-    volumes:
-      - caddy_data:/data
-    environment:
-      CADDY_SITE_ADDRESS: api.myapp.com
-
-volumes:
-  caddy_data:
-    name: caddy-data
-```
-
-**proxy/compose.override.yaml**
-
-```yaml
-# Development overrides
-
-services:
-  caddy:
-    ports:
-      - "8000:80"
-    environment:
-      CADDY_SITE_ADDRESS: :80
-```
-
-**proxy/caddy/Caddyfile**
-
-```yaml
-{$CADDY_SITE_ADDRESS}
-
-reverse_proxy app_caddy:80
-```
-
-## Deploying
-
-The proxy is deployed manually, and app infra files are created in a new
-directory every time.
-
-```
-proxy/
-  compose.yaml
-app/
-  a/
-    compose.yaml
-    .env
-  b/
-    compose.yaml
-    .env
-```
-
-the Proxy (Manual Step)
+The proxy is only deployed once.
 
 On the server, create a proxy directory:
 
@@ -116,16 +124,9 @@ Back on local, copy your Compose file to the server:
 scp proxy/compose.yaml app-backend:proxy/
 ```
 
-> Optionally, you might point a second hostname to an idle stack for testing.
+> You might also point a second hostname to an idle stack for testing.
 
-The proxy manages TLS, so give it a persistent volume for certificates:
-
-```sh
-docker volume create caddy_data
-```
-
-Start the proxy, attaching it to both networks – this requires both stacks to
-be up first, so the networks exist:
+## Deploy the app
 
 ```sh
 docker compose up -d
@@ -141,9 +142,7 @@ docker compose exec caddy curl -X PATCH -d '"newapp_caddy:80"' \
 
 ## Github Actions Workflow
 
-**.github/workflows/ci.yaml**
-
-```yaml
+```yaml title=".github/workflows/ci.yaml"
 name: Deploy
 
 on:
