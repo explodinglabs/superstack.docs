@@ -7,30 +7,60 @@ The standard SuperStack replaces the stack in place.
 Once your app is ready for production, consider adding a traffic-switcher in
 front of your app.
 
-How it works:
+Here's how it works:
 
 - We stop exposing ports in the `app` project.
-- A new `proxy` project is added, with ports open.
-- It's purpose is to direct traffic to the right application.
-- Apps are deployed completely separate to the live one.
+- A new `proxy` service is added, with ports open.
+- It's purpose is to direct traffic to the right application. (it also takes
+  over TLS termination from the app layer).
+- Rather than upgrading the one app, apps are deployed separate to the live
+  one. A fresh app every time.
 
 This way, environments are _ephemeral, immutable and idempotent_.
 
-The directory structure looks like:
-
-```
-proxy/
-  compose.yaml
-app/
-  a/
-    compose.yaml
-    .env
-  b/
-    compose.yaml
-    .env
+```mermaid
+flowchart TD
+    Proxy["<b>Proxy</b><br><i>Used for traffic shifting</i>"]
+    Proxy --> App["<b>Application</b><br><i>API Gateway, Auth, APIs, Messaging, Workers, etc.</i>"]
+    App --> Database["<b>Database</b><br><i>Optional</i>"]
 ```
 
-## 1. Create a new project
+## 1. Adjust the Application
+
+Remove the app's exposed ports, and connect to the proxy's network:
+
+```yaml title="app/compose.yaml" hl_lines="6-11,13-15"
+services:
+  caddy:
+    build:
+      context: ./caddy
+    environment:
+      CADDY_SITE_ADDRESS: ":80"
+    networks:
+      default:
+      proxy_default:
+        aliases:
+          - ${COMPOSE_PROJECT_NAME}_caddy
+
+networks:
+  proxy_default:
+    external: true
+```
+
+What's changed?
+
+1. The exposed `ports` were removed.
+2. Caddy's site address has changed to `:80` (The application layer no longer
+   handles TLS).
+3. We connect to the proxy's network, so the proxy can direct traffic to the
+   app.
+4. A container alias was added. This alias allows the proxy to target this
+   container, while still allowing Docker to manage the container name.
+
+Additionally, the `CADDY_SITE_ADDRESS` env var can be removed from the
+development override file.
+
+## 2. Create a new `proxy` project
 
 From the root of the repository, create a new `proxy` project:
 
@@ -75,37 +105,20 @@ services:
 reverse_proxy app_caddy:80
 ```
 
-## 2. Update the Application
+## Deployment
 
-Remove the app's exposed ports, and connect to the proxy's network:
+The directory structure looks like:
 
-```yaml title="app/compose.yaml" hl_lines="6-13,15-17"
-services:
-  caddy:
-    build:
-      context: ./caddy
-    environment:
-      CADDY_SITE_ADDRESS: ":80"
-    networks:
-      default:
-      # This alias allows the proxy to target this container, while still
-      # allowing Docker to manage the container name
-      proxy_default:
-        aliases:
-          - ${COMPOSE_PROJECT_NAME}_caddy
-
-networks:
-  proxy_default:
-    external: true
 ```
-
-```yaml title="app/compose.override.yaml"
-# Development overrides
-
-services:
-  caddy:
-    volumes:
-      - ./caddy/Caddyfile:/etc/caddy/Caddyfile:ro
+proxy/
+  compose.yaml
+app/
+  a/
+    compose.yaml
+    .env
+  b/
+    compose.yaml
+    .env
 ```
 
 ## Deploy the Proxy
