@@ -4,13 +4,11 @@ SuperStack is **Docker-native**, so deployments are simple, consistent, and
 portable. The goal is that only `compose.yaml` and secrets need to exist on the
 remote server.
 
-## Prepare your Application
+## 🧱 1. Build Your Images
 
-Services that are built (they have a `build:` section in `compose.yaml`), add
-your own container repository image URIs (e.g. your Docker Hub or GitHub
-Container Registry account), for example:
+If a service has a `build:` section, add your own image name and version tag:
 
-```yaml title="compose.yaml"
+```yaml title="compose.yaml" hl_lines="5"
 services:
   caddy:
     build:
@@ -25,49 +23,45 @@ docker compose build
 docker compose push
 ```
 
-## 📦 Deploy
+## 📦 2. Copy to Server
 
-Copy `compose.yaml` to the server:
+Copy your `compose.yaml` to the remote host:
 
 ```sh
 scp compose.yaml youruser@yourserver:
 ```
 
-### Secrets
+### 3. Set Secrets
 
-The app also needs your secrets (passwords, keys, etc.).
+Your app will need credentials such as database passwords or API keys.
+Choose one of these approaches:
 
-There are a few options:
+1. **`.env` file** — simplest for manual deploys.
 
-1. Put secrets in a `.env` file on the server, alongside your compose.yaml.
-   Convenient but Less secure. Be sure to `chmod 600 .env`.
-1. Set environment variables in the the `docker compose` command. Inconvenient.
-   Be sure to disable shell history.
-1. Use environment injection in CI/CD.
+```sh
+chmod 600 .env
+```
 
-## 🚀 Launch your Stack
+2. **Environment variables** — pass them directly to the command line.
+3. **CI/CD injection** — good for automated pipelines.
 
-Bring up the stack:
+## 🚀 Launch the App
+
+Start the application on the server:
 
 ```sh
 docker compose pull
 docker compose up -d
 ```
 
----
-
-That’s it — your backend is live.
-
-This type of rolling deployment makes it hard to test before going live and to
-rollback, and can have some downtime while upgrading. Consider reading the Wiki
-page on [Advanced Deployments]().
-
-## Github Actions Workflow
-
-TODO
+Your backend is now live. 🚀
 
 ---
 
-## ➕ What Now?
+## 🧭 Next Steps
 
-Add to your app by following guides in the [Wiki](https://github.com/explodinlabs/superstack/wiki).
+This setup replaces the stack in place.
+
+If you want zero-downtime deployments, rollback support, or blue-green testing,
+see the Wiki page: [Advanced
+Deployments](https://github.com/explodinlabs/superstack/wiki).
