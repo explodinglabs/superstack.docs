@@ -55,7 +55,7 @@ git pull upstream main
 Copy the example environment file:
 
 ```sh
-cp example.env .env
+cp app/example.env app/.env
 ```
 
 This `.env` file is used to set secrets, passwords, keys, etc.
