@@ -1,37 +1,51 @@
-The standard SuperStack has a single app, and it's upgraded in place.
+# ⚙️ Advanced Deployments
 
-- There's potentially some downtime while upgrading.
-- Once an app is upgraded, you can't rollback.
-- You can't test one app while another is live (blue/green)
+By default, SuperStack runs as a **single project** that's upgraded in place.
 
-When your app is ready for production, consider adding a traffic-switcher in
-front of your app.
+While this is simple, it has some trade-offs:
 
-Here's how it works:
+- Some downtime during upgrades
+- No way to test a new version while another is live (blue/green)
+- No quick rollback once upgraded
 
-- We stop exposing ports in the `app` project.
-- A new `proxy` service is added with ports open.
-- It's purpose is to direct traffic to the right application. (it also takes
-  over TLS termination)
-- Rather than upgrading the single app, new apps containers are brought up,
-  separate to the live one, and they connect to the proxy's network.
-- Test the new app before it goes live.
-- Finally traffic is flipped to the new app.
+When your app is ready for production, consider adding a **traffic-switcher**
+in front it.
 
-This way, environments are _ephemeral, immutable and idempotent_.
+## 🧭 How It Works
+
+Instead of directly exposing ports from the app, you add a small proxy project
+that sits in front of it.
+
+The proxy’s job is to:
+
+- Route incoming traffic to the active app stack
+- Make it easy to flip traffic between app versions
+- Terminate TLS
 
 ```mermaid
 flowchart TD
-    Proxy["<b>Proxy</b><br><i>Used for traffic shifting</i>"]
-    Proxy --> App["<b>Application</b><br><i>API Gateway, Auth, APIs, Messaging, Workers, etc.</i>"]
-    App --> Database["<b>Database</b><br><i>Optional</i>"]
+    Proxy["Traffic Router"]
+    Proxy --> LiveApp["Live App"]
+    NextApp["Next App"]
 ```
+
+## 🔄 Deployment Flow
+
+1. Stop exposing ports in the app project — only the proxy will listen on :80 and :443.
+2. Add a proxy project that runs Caddy (or another gateway).
+3. Each time you deploy, bring up a new app stack, connected to the proxy’s
+   network.
+4. Test the new stack while the old one is still live.
+5. Flip traffic in the proxy to point to the new stack.
+6. Tear down the old one when ready.
+
+Ok, we need to make some changes to the repository.
 
 ## 1. Adjust the Application
 
 Remove the app's exposed ports, and connect to the proxy's network:
 
-```yaml title="app/compose.yaml" hl_lines="6-11,13-15"
+```yaml title="app/compose.yaml" hl_lines="5-11 13-15"
 services:
   caddy:
     build:
@@ -51,18 +65,18 @@ networks:
 
 What's changed?
 
-1. The exposed `ports` were removed.
-2. Caddy's site address has changed to `:80` (The application layer no longer
+1. The exposed ports were removed.
+1. Caddy's site address has changed to `:80` (The application layer no longer
    handles TLS).
-3. We connect to the proxy's network, so the proxy can direct traffic to the
+1. We connect to the proxy's network, so the proxy can direct traffic to the
    app.
-4. A container alias was added. This alias allows the proxy to target this
+1. A container alias was added. This alias allows the proxy to target this
    container, while still allowing Docker to manage the container name.
 
-Additionally, the `CADDY_SITE_ADDRESS` env var can be removed from the
-development override file.
+The `CADDY_SITE_ADDRESS` environment variable can be removed from the override
+file.
 
-## 2. Create a new `proxy` project
+## 2. Start a new `proxy` project
 
 From the root of the repository, create a new `proxy` project:
 
@@ -70,7 +84,7 @@ From the root of the repository, create a new `proxy` project:
 mkdir proxy
 ```
 
-Add a compose file:
+Give it a Compose file:
 
 ```yaml title="proxy/compose.yaml"
 services:
@@ -87,8 +101,10 @@ services:
 
 volumes:
   caddy_data:
-    name: caddy-data # The proxy manages TLS, so give it a persistent volume for certificates
+    name: caddy-data # Persistent volume for certificates
 ```
+
+Add development overrides:
 
 ```yaml title="proxy/compose.override.yaml"
 # Development overrides
@@ -101,15 +117,36 @@ services:
       CADDY_SITE_ADDRESS: :80
 ```
 
+Configure Caddy:
+
+```sh
+mkdir proxy/caddy
+```
+
 ```yaml title="proxy/caddy/Caddyfile"
 {$CADDY_SITE_ADDRESS}
 
 reverse_proxy app_caddy:80
 ```
 
-## Deployment
+Add a Dockerfile:
 
-The directory structure looks like:
+```dockerfile title="proxy/caddy/Dockerfile"
+FROM caddy:2
+
+COPY Caddyfile /etc/caddy/Caddyfile
+```
+
+## Start the services
+
+Start the proxy first, then the app which connects to its network.
+
+```yaml
+cd proxy && docker compose up -d
+cd ../app && docker compose up -d
+```
+
+## Deploying
 
 ```
 proxy/
@@ -123,9 +160,7 @@ app/
     .env
 ```
 
-## Deploy the Proxy
-
-The proxy is only deployed once.
+The proxy is deployed once.
 
 On the server, create a proxy directory:
 
@@ -133,7 +168,7 @@ On the server, create a proxy directory:
 mkdir proxy
 ```
 
-Back on local, copy your Compose file to the server:
+Copy your Compose file to the server:
 
 ```sh
 scp proxy/compose.yaml app-backend:proxy/
@@ -147,7 +182,7 @@ scp proxy/compose.yaml app-backend:proxy/
 docker compose up -d
 ```
 
-## Flip traffic
+### Flip traffic
 
 ```sh
 cd proxy
