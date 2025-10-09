@@ -1,20 +1,22 @@
-The standard SuperStack replaces the stack in place.
+The standard SuperStack has a single app, and it's upgraded in place.
 
-- There's some downtime while upgrading.
+- There's potentially some downtime while upgrading.
+- Once an app is upgraded, you can't rollback.
 - You can't test one app while another is live (blue/green)
-- Once an app is upgrade, you can't rollback.
 
-Once your app is ready for production, consider adding a traffic-switcher in
+When your app is ready for production, consider adding a traffic-switcher in
 front of your app.
 
 Here's how it works:
 
 - We stop exposing ports in the `app` project.
-- A new `proxy` service is added, with ports open.
+- A new `proxy` service is added with ports open.
 - It's purpose is to direct traffic to the right application. (it also takes
-  over TLS termination from the app layer).
-- Rather than upgrading the one app, apps are deployed separate to the live
-  one. A fresh app every time.
+  over TLS termination)
+- Rather than upgrading the single app, new apps containers are brought up,
+  separate to the live one, and they connect to the proxy's network.
+- Test the new app before it goes live.
+- Finally traffic is flipped to the new app.
 
 This way, environments are _ephemeral, immutable and idempotent_.
 
