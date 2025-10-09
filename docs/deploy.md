@@ -33,15 +33,11 @@ scp compose.yaml youruser@yourserver:
 
 ### 3. Set Secrets
 
-Your app will need credentials such as database passwords or API keys.
-Choose one of these approaches:
+Your app will need credentials such as database passwords or API keys. Choose
+one of these approaches:
 
-1. **`.env` file** — simplest for manual deploys.
-
-```sh
-chmod 600 .env
-```
-
+1. **`.env` file** — simply place a `.env` file alongside your `compose.yaml`.
+   Be sure to `chmod 600 .env`.
 2. **Environment variables** — pass them directly to the command line.
 3. **CI/CD injection** — good for automated pipelines.
 
