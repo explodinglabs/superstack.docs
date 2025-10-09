@@ -1,13 +1,13 @@
 # 🚀 Getting Started
 
-<video controls width="100%">
+<!--video controls width="100%">
   <source src="/superstack/assets/getting-started.mp4" type="video/mp4">
-  <data 
-    value="Music: Bensound, License: UZG5X7IWWLQOQEU1, Artist: Lunar Years" 
+  <data
+    value="Music: Bensound, License: UZG5X7IWWLQOQEU1, Artist: Lunar Years"
     hidden>
   </data>
   Your browser does not support the video tag.
-</video>
+</video-->
 
 SuperStack uses Docker, so make sure [Docker is
 installed](https://docs.docker.com/get-docker/) before you begin.
@@ -55,14 +55,15 @@ git pull upstream main
 Copy the example environment file:
 
 ```sh
-cp app/example.env app/.env
+cd app
+cp example.env .env
 ```
 
-This `.env` file is used to set secrets, passwords, keys, etc.
+The `.env` file is used to set secrets, passwords, keys, etc.
 
 > ⚠️ Never store secrets in version control.
 
-## 3. Start the Stack
+## 3. Start the App
 
 ```sh
 docker compose up -d
@@ -70,20 +71,15 @@ docker compose up -d
 
 That's it – your backend is live.
 
+Test it with:
+
+```sh
+$ curl http://localhost:8000/healthcheck
+OK
+```
+
 ---
-
-## 🧩 What Just Happened?
-
-SuperStack automatically:
-
-1. Starts a fresh Postgres database
-2. Applies initial migrations
-3. Launches PostgREST
-4. Serves everything through Caddy
-
-> 💡 Only Caddy exposes a port – all services are routed through it.
 
 ## ➕ What's Next?
 
-👉 [Create your database schema with migrations](migrations.md)  
-👉 [Deploy to a remote environment](deploying.md)
+👉 [Deploy to a remote environment](deploy.md)

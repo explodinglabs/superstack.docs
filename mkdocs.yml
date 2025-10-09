@@ -48,4 +48,4 @@ markdown_extensions:
 nav:
   - Home: index.md
   - Getting Started: gettingstarted.md
-  - Deploying to Remote Environments: deploying.md
+  - Deploying to Remote Environments: deploy.md

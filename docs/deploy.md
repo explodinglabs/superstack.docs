@@ -65,3 +65,9 @@ page on [Advanced Deployments]().
 ## Github Actions Workflow
 
 TODO
+
+---
+
+## ➕ What Now?
+
+Add to your app by following guides in the [Wiki](https://github.com/explodinlabs/superstack/wiki).
