@@ -8,8 +8,8 @@ While this is simple, it has some trade-offs:
 - No way to test a new version while another is live (blue/green)
 - No quick rollback once upgraded
 
-When your app is ready for production, you can enable a **traffic-router** in
-to eliminate downtime, enable blue/green testing and easy rollbacks.
+When your app is ready for production, you can enable a traffic router to
+eliminate these issues.
 
 ## 🧭 How It Works
 
@@ -27,14 +27,14 @@ flowchart TD
     NextApp["Next App"]
 ```
 
-In standard mode, the app exposes ports directly. In advanced mode, the **proxy
-owns the ports**, and apps connect to it internally over Docker networks.
+Normally the app exposes ports directly, but in this advanced mode, the **proxy
+owns the ports**, and apps connect to its Docker network.
 
 ## 🔄 Deployment Flow
 
-1. Stop exposing ports in the app project — only the proxy will listen on `:80`
-   and `:443`.
 1. Enable the proxy project (included in the repository).
+1. Stop exposing ports in the app — only the proxy will listen on `:80` and
+   `:443`.
 1. For each deployment, bring up a new app stack (e.g. `app/<commit>`),
    connected to the proxy’s network.
 1. Test the new app while the current one remains live.
@@ -45,18 +45,20 @@ owns the ports**, and apps connect to it internally over Docker networks.
 
 A `proxy` project already exists in your SuperStack project.
 
-> For consistent environments, use the proxy in all environments including
+> For consistent environments, use the proxy in all environments, including
 > development.
 
-Start it:
+Start the proxy:
 
 ```sh
+cd proxy
 docker compose up -d
 ```
 
 ## ⚙️ 2. Adjust the Application
 
-Remove the app's exposed ports and connect it to the proxy's network:
+**Remove the `ports:` section from the app,** and connect it to the proxy's
+network by adding these lines:
 
 ```yaml title="app/compose.yaml" hl_lines="5-11 13-15"
 services:
@@ -76,23 +78,25 @@ networks:
     external: true
 ```
 
+You should also remove the `ports:` and `CADDY_SITE_ADDRESS` in
+`app/compose.override.yaml`.
+
 What's Changed?
 
 1. Exposed ports were removed.
 1. `CADDY_SITE_ADDRESS` now listens internally on port `:80`.
 1. The app joins the proxy's network so traffic can be routed to it.
-1. A container alias (`_caddy`) lets the proxy target this service reliably.
-
-You can also remove the `CADDY_SITE_ADDRESS` override in
-`compose.override.yaml`.
+1. A container alias (`_caddy`) allows the proxy to target this service
+   reliably.
 
 Recreate the app's Caddy container:
 
 ```sh
+cd app
 docker compose up -d --force-recreate caddy
 ```
 
-Commit these changes – your app is now "proxy-ready".
+Commit these changes – your app is now proxy-ready.
 
 ## 🚀 3. Deploying
 
@@ -111,8 +115,8 @@ app/
     .env
 ```
 
-Before deploying, build and push your own proxy image by adding an image name
-to the Compose file:
+Before deploying, build and push your own proxy image by adding an `image:`
+line to the Compose file:
 
 ```yaml title="proxy/compose.yaml" hl_lines="5"
 services:
@@ -143,11 +147,17 @@ scp proxy/compose.yaml app-backend:proxy/
 
 Start the proxy:
 
+```sh
 docker compose up -d
+```
 
 ## 🆕 4. Deploy the New App Stack
 
 Deploy your app into a new directory (e.g. `b/`):
+
+```sh
+mkdir app/b
+```
 
 ```sh
 scp compose.yaml yourserver:app/b/
@@ -160,10 +170,11 @@ cd app/b
 docker compose up -d
 ```
 
-Optionally, verify it's healthy before switching traffic:
+Optionally, verify the new app is healthy before switching traffic:
 
 ```sh
-docker compose exec -T caddy curl -fsS http://caddy:80/healthz
+$ docker compose exec -T caddy curl -fsS http://caddy:80/healthz
+OK
 ```
 
 ## 🔁 5. Flip Traffic
@@ -177,6 +188,8 @@ docker compose exec caddy curl -X PATCH -d '"newapp_caddy:80"' \
 Traffic now points to the new stack.
 
 ## ⚡ GitHub Actions Example
+
+Use this Github Actions Workflow to automate deployments.
 
 <details>
 <summary>Show full workflow</summary>
