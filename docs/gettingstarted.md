@@ -14,8 +14,6 @@ installed](https://docs.docker.com/get-docker/) before you begin.
 
 ## 1. Get SuperStack
 
-### Option 1: Use the Template (Easiest)
-
 Click [Use this template](https://github.com/explodinglabs/superstack/generate)
 and create a new repository (e.g. `myapp-backend`) on GitHub.
 
@@ -24,30 +22,6 @@ Clone it to your machine:
 ```sh
 git clone https://github.com/yourname/myapp-backend.git
 cd myapp-backend
-```
-
-### Option 2: Clone and Track Upstream (Advanced)
-
-If you want to keep SuperStack’s Git history and pull upstream changes later,
-clone SuperStack:
-
-```sh
-git clone https://github.com/explodinglabs/superstack.git myapp-backend
-cd myapp-backend
-```
-
-[Create your own repo](https://github.com/new), then:
-
-```sh
-git remote rename origin upstream
-git remote add origin https://github.com/yourname/myapp-backend.git
-git push -u origin main
-```
-
-You can now pull upstream changes with:
-
-```sh
-git pull upstream main
 ```
 
 ## 2. Configure Environment Variables
@@ -69,12 +43,12 @@ The `.env` file is used to set secrets, passwords, keys, etc.
 docker compose up -d
 ```
 
-That's it – your backend is live.
+That's it – your backend is ready for development.
 
 Test it with:
 
 ```sh
-$ curl http://localhost:8000/healthcheck
+$ curl http://localhost:8000/healthz
 OK
 ```
 

@@ -241,9 +241,9 @@ jobs:
             # Bring up stack and run healthchecks
             trap 'docker compose down' ERR
             docker compose up --detach
-            docker compose exec -T caddy curl -fsS http://caddy:80/healthcheck
+            docker compose exec -T caddy curl -fsS http://caddy:80/healthz
             # Add more healthchecks here
-            # docker compose exec -T caddy curl -fsS http://api:8080/healthcheck
+            # docker compose exec -T caddy curl -fsS http://api:8080/healthz
             # docker compose exec -T caddy curl -fsS http://postgrest:3000/
 
       - name: Flip traffic
