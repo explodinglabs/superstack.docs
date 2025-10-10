@@ -14,7 +14,7 @@ installed](https://docs.docker.com/get-docker/) before you begin.
 
 ## 1. Get SuperStack
 
-Click [Use this template](https://github.com/explodinglabs/superstack/generate)
+Click _**[Use this template](https://github.com/explodinglabs/superstack/generate)**_
 and create a new repository (e.g. `myapp-backend`) on GitHub.
 
 Clone it to your machine:
@@ -24,7 +24,7 @@ git clone https://github.com/yourname/myapp-backend.git
 cd myapp-backend
 ```
 
-## 2. Configure Environment Variables
+## 2. Create Environment File
 
 Copy the example environment file:
 
