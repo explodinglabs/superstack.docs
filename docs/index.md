@@ -44,7 +44,7 @@ Caddy), making it easy to develop locally or deploy remotely.
 
 ---
 
-## 📚 What's next?
+## 📚 Get Started
 
-👉 [Getting Started](gettingstarted.md) – a guide to installing SuperStack and
-launching the stack.
+👉 [Proceed to Getting Started](gettingstarted.md) – a guide to installing
+SuperStack and launching the stack.

@@ -82,4 +82,5 @@ OK
 
 ## ➕ What's Next?
 
+👉 [Add services by following the Wiki](https://github.com/explodinglabs/superstack/wiki)  
 👉 [Deploy to a remote environment](deploy.md)
