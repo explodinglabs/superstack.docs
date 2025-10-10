@@ -1,8 +1,10 @@
 # ☁️ Deploying to Remote Environments
 
 SuperStack is **Docker-native**, so deployments are simple, consistent, and
-portable. The goal is that only `compose.yaml` and secrets need to exist on the
-remote server.
+portable.
+
+The goal is that only `compose.yaml` and secrets need to exist on the remote
+server.
 
 ## 🧱 1. Build Your Images
 

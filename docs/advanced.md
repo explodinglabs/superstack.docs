@@ -8,19 +8,17 @@ While this is simple, it has some trade-offs:
 - No way to test a new version while another is live (blue/green)
 - No quick rollback once upgraded
 
-When your app is ready for production, consider adding a **traffic-switcher**
-in front it.
+When your app is ready for production, you can enable a **traffic-router** in
+to eliminate downtime, enable blue/green testing and easy rollbacks.
 
 ## 🧭 How It Works
 
-Instead of directly exposing ports from the app, you add a small proxy project
-that sits in front of it.
+The traffic router is a lightweight proxy project (already included with
+SuperStack) that sits in front of your app. Its responsibilities:
 
-The proxy’s job is to:
-
-- Route incoming traffic to the active app stack
-- Make it easy to flip traffic between app versions
-- Terminate TLS
+- Route traffic to the active app stack
+- Simplify switching between versions
+- Handle TLS termination
 
 ```mermaid
 flowchart TD
@@ -29,88 +27,36 @@ flowchart TD
     NextApp["Next App"]
 ```
 
+In standard mode, the app exposes ports directly. In advanced mode, the **proxy
+owns the ports**, and apps connect to it internally over Docker networks.
+
 ## 🔄 Deployment Flow
 
-1. Stop exposing ports in the app project — only the proxy will listen on :80 and :443.
-2. Add a proxy project that runs Caddy (or another gateway).
-3. Each time you deploy, bring up a new app stack, connected to the proxy’s
-   network.
-4. Test the new stack while the old one is still live.
-5. Flip traffic in the proxy to point to the new stack.
-6. Tear down the old one when ready.
+1. Stop exposing ports in the app project — only the proxy will listen on `:80`
+   and `:443`.
+1. Enable the proxy project (included in the repository).
+1. For each deployment, bring up a new app stack (e.g. `app/<commit>`),
+   connected to the proxy’s network.
+1. Test the new app while the current one remains live.
+1. Flip traffic in the proxy to point to the new app.
+1. Tear down the old one when ready.
 
-Ok, we need to make some changes to the repository.
+## 🧱 1. Start the Proxy
 
-## 1. Create a new `proxy` project
+A `proxy` project already exists in your SuperStack project.
 
-From the root of the repository, create a new `proxy` project:
+> For consistent environments, use the proxy in all environments including
+> development.
 
-```sh
-mkdir proxy
-```
-
-Give it a Compose file:
-
-```yaml title="proxy/compose.yaml"
-services:
-  caddy:
-    build:
-      context: ./caddy
-    ports:
-      - "80:80"
-      - "443:443"
-    volumes:
-      - caddy_data:/data
-    environment:
-      CADDY_SITE_ADDRESS: api.myapp.com
-
-volumes:
-  caddy_data:
-    name: caddy-data # Persistent volume for certificates
-```
-
-Add development overrides:
-
-```yaml title="proxy/compose.override.yaml"
-# Development overrides
-
-services:
-  caddy:
-    ports:
-      - "8000:80"
-    environment:
-      CADDY_SITE_ADDRESS: :80
-```
-
-Configure Caddy:
+Start it:
 
 ```sh
-mkdir proxy/caddy
-```
-
-```yaml title="proxy/caddy/Caddyfile"
-{$CADDY_SITE_ADDRESS}
-
-reverse_proxy app_caddy:80
-```
-
-Add a Dockerfile:
-
-```dockerfile title="proxy/caddy/Dockerfile"
-FROM caddy:2
-
-COPY Caddyfile /etc/caddy/Caddyfile
-```
-
-Start the proxy service:
-
-```yaml
 docker compose up -d
 ```
 
-## 2. Adjust the Application
+## ⚙️ 2. Adjust the Application
 
-Remove the app's exposed ports, and connect to the proxy's network:
+Remove the app's exposed ports and connect it to the proxy's network:
 
 ```yaml title="app/compose.yaml" hl_lines="5-11 13-15"
 services:
@@ -130,26 +76,28 @@ networks:
     external: true
 ```
 
-What's changed?
+What's Changed?
 
-1. The exposed ports were removed.
-1. Caddy's site address has changed to `:80` (The application layer no longer
-   handles TLS).
-1. We connect to the proxy's network, so the proxy can direct traffic to the
-   app.
-1. A container alias was added. This alias allows the proxy to target this
-   container, while still allowing Docker to manage the container name.
+1. Exposed ports were removed.
+1. `CADDY_SITE_ADDRESS` now listens internally on port `:80`.
+1. The app joins the proxy's network so traffic can be routed to it.
+1. A container alias (`_caddy`) lets the proxy target this service reliably.
 
-The `CADDY_SITE_ADDRESS` environment variable can be removed from the override
-file.
+You can also remove the `CADDY_SITE_ADDRESS` override in
+`compose.override.yaml`.
+
+Recreate the app's Caddy container:
 
 ```sh
-docker compose up -d app
+docker compose up -d --force-recreate caddy
 ```
 
-Commit these changes.
+Commit these changes – your app is now "proxy-ready".
 
-## Deploying
+## 🚀 3. Deploying
+
+The proxy is deployed once (usually manually), and each app is deployed
+separately into its own directory.
 
 ```
 proxy/
@@ -163,29 +111,62 @@ app/
     .env
 ```
 
-The proxy is deployed once.
+Before deploying, build and push your own proxy image by adding an image name
+to the Compose file:
 
-On the server, create a proxy directory:
+```yaml title="proxy/compose.yaml" hl_lines="5"
+services:
+  caddy:
+    build:
+      context: ./caddy
+    image: ghcr.io/youruser/yourapp-proxy:0.1.0
+```
+
+Build and push it:
+
+```sh
+docker compose build
+docker compose push
+```
+
+Create a proxy directory on the server:
 
 ```sh
 mkdir proxy
 ```
 
-Copy your Compose file to the server:
+Copy the proxy's Compose file:
 
 ```sh
 scp proxy/compose.yaml app-backend:proxy/
 ```
 
-> You might also point a second hostname to an idle stack for testing.
+Start the proxy:
 
-## Deploy the app
+docker compose up -d
+
+## 🆕 4. Deploy the New App Stack
+
+Deploy your app into a new directory (e.g. `b/`):
 
 ```sh
+scp compose.yaml yourserver:app/b/
+```
+
+Start it on the server:
+
+```sh
+cd app/b
 docker compose up -d
 ```
 
-### Flip traffic
+Optionally, verify it's healthy before switching traffic:
+
+```sh
+docker compose exec -T caddy curl -fsS http://caddy:80/healthz
+```
+
+## 🔁 5. Flip Traffic
 
 ```sh
 cd proxy
@@ -193,7 +174,12 @@ docker compose exec caddy curl -X PATCH -d '"newapp_caddy:80"' \
   http://localhost:2019/config/apps/http/servers/srv0/routes/0/handle/0/upstreams/0/dial
 ```
 
-## Github Actions Workflow
+Traffic now points to the new stack.
+
+## ⚡ GitHub Actions Example
+
+<details>
+<summary>Show full workflow</summary>
 
 ```yaml title=".github/workflows/ci.yaml"
 name: Deploy
@@ -271,3 +257,5 @@ jobs:
             mkdir -p /var/log/sku-generator
             echo "$(date -u +"%Y-%m-%dT%H:%M:%SZ") ${{ github.sha }}" >> /var/log/sku-generator/deploy.log
 ```
+
+</details>
