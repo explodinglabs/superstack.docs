@@ -211,7 +211,7 @@ API](https://caddyserver.com/docs/api).
 Since the app was brought up in a directory named `b`, the app's Caddy service
 was given the alias `b_caddy`.
 
-Direct all traffic to `b_caddy`:
+Redirect all traffic to `b_caddy`:
 
 ```sh
 cd proxy
