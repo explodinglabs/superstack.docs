@@ -9,12 +9,12 @@ While this is simple, it has some trade-offs:
 - No quick rollback once upgraded
 
 When your app is ready for production, you can enable a simple **traffic
-router** to eliminate these issues.
+routing proxy** to eliminate these issues.
 
 ## 🧭 How It Works
 
-The traffic router is a lightweight proxy already included with SuperStack that
-sits in front of your app. Its responsibilities:
+The "proxy" is a tiny service already included with SuperStack that sits in
+front of your app. Its responsibilities:
 
 - Route traffic to the correct app
 - Simplify switching between versions
