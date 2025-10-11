@@ -132,7 +132,7 @@ app/
     .env
 ```
 
-### 1. Deploy the Proxy
+### Step 1. Deploy the Proxy
 
 Before deploying, build and push your own proxy image by adding an `image:`
 line to the Compose file:
@@ -170,7 +170,7 @@ Start the proxy:
 docker compose up -d
 ```
 
-### 2. Deploy a new App version
+### Step 2. Deploy a new App version
 
 Deploy your app into a new directory (e.g. `app/b/`):
 
