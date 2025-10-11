@@ -203,7 +203,7 @@ OK
 
 ## 🔁 4. Route Traffic
 
-### Option 1: Use the REST API
+### Option 1: Use Caddy's REST API
 
 Caddy's configuration can be adjusted via HTTP using its [REST
 API](https://caddyserver.com/docs/api).
