@@ -24,20 +24,7 @@ git clone https://github.com/yourname/myapp-backend.git
 cd myapp-backend
 ```
 
-## 2. Create Environment File
-
-Copy the example environment file:
-
-```sh
-cd app
-cp example.env .env
-```
-
-The `.env` file is used to set secrets, passwords, keys, etc.
-
-> ⚠️ Never store secrets in version control.
-
-## 3. Start the App
+## 2. Start the App
 
 ```sh
 docker compose up -d
