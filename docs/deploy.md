@@ -24,6 +24,7 @@ Build and push your images:
 cd app
 docker compose build
 docker compose push
+cd ..
 ```
 
 ## 📦 2. Copy to Server
@@ -31,7 +32,7 @@ docker compose push
 Copy your `compose.yaml` to the remote host:
 
 ```sh
-scp compose.yaml youruser@yourserver:
+scp app/compose.yaml youruser@yourserver:
 ```
 
 ## 3. Set Secrets
