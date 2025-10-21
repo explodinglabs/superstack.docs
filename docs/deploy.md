@@ -10,7 +10,7 @@ server.
 
 If a service has a `build:` section, add your own image name and version tag:
 
-```yaml title="compose.yaml" hl_lines="5"
+```yaml title="app/compose.yaml" hl_lines="5"
 services:
   caddy:
     build:
