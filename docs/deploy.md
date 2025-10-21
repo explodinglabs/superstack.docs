@@ -8,14 +8,14 @@ server.
 
 ## 🧱 1. Build Your Images
 
-If a service has a `build:` section, add your own image name and version tag:
+If a service has a `build:` section, add your own `image:` name and version tag:
 
-```yaml title="app/compose.yaml"
+```yaml title="app/compose.yaml" hl_lines=3
 services:
   caddy:
+    image: ghcr.io/youruser/yourapp-caddy:0.1.0
     build:
       context: ./caddy
-    image: ghcr.io/youruser/yourapp-caddy:0.1.0
 ```
 
 Build and push your images:
