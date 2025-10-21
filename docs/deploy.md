@@ -10,7 +10,7 @@ server.
 
 If a service has a `build:` section, add your own image name and version tag:
 
-```yaml title="app/compose.yaml" hl_lines="5"
+```yaml title="app/compose.yaml"
 services:
   caddy:
     build:
@@ -21,6 +21,7 @@ services:
 Build and push your images:
 
 ```sh
+cd app
 docker compose build
 docker compose push
 ```
