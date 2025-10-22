@@ -50,13 +50,23 @@ one of these approaches:
 Start the application on the server:
 
 ```sh
-docker compose pull
 docker compose up -d
 ```
 
 Your backend is now live. 🚀
 
 ---
+
+## Upgrading
+
+To upgrade your app, simply increment the image tag versions in compose.yaml.
+
+The rest is the same:
+
+2. `docker compose build`
+3. `docker compose push`
+4. `scp compose.yaml yourserver:`
+5. `docker compose up -d`
 
 ## 🧭 Next Steps
 
