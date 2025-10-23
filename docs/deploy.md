@@ -118,7 +118,6 @@ jobs:
           envs: GHCR_PAT
           script: |
             set -euo pipefail
-            cp .env app/
             cd app
 
             # Pull images
