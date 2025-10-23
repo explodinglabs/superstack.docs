@@ -28,10 +28,10 @@ docker compose push
 
 ## 📦 2. Copy to Server
 
-Copy your `compose.yaml` to the remote host:
+Create an `app` directory on the server and copy your `compose.yaml` there:
 
 ```sh
-scp compose.yaml youruser@yourserver:
+scp compose.yaml youruser@yourserver:app/
 ```
 
 ## 3. Set Secrets
