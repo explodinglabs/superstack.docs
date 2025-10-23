@@ -28,8 +28,8 @@ flowchart TD
     NextApp["Next App"]
 ```
 
-Normally the app exposes ports directly, but in this advanced mode, the **proxy
-owns the ports**, and apps connect to its Docker network.
+Normally the app exposes ports directly, but in this mode, the **proxy owns the
+ports**, and apps connect to its Docker network.
 
 ## 🔄 Tasks
 
@@ -254,9 +254,9 @@ After that, to re-route traffic, simply change the app service name in
 docker compose exec caddy caddy reload --config /etc/caddy/Caddyfile
 ```
 
-## ⚡ GitHub Actions Example
+## ⚡ GitHub Actions
 
-Add this Github Actions workflow to automate deployments:
+Here's a Github Actions workflow you can use to automate deployments:
 
 <details>
 <summary>Show full workflow</summary>
