@@ -256,7 +256,11 @@ docker compose exec caddy caddy reload --config /etc/caddy/Caddyfile
 
 ## ⚡ GitHub Actions
 
-Here's a Github Actions workflow you can use to automate deployments:
+Here's a Github Actions workflow you can use to automate deployments.
+
+```sh
+mkdir -p .github/workflows
+```
 
 <details>
 <summary>Show full workflow</summary>
@@ -306,7 +310,7 @@ jobs:
 
             # Bring up stack and run healthchecks
             trap 'docker compose down' ERR
-            docker compose up --detach
+            docker compose up -d
             docker compose exec -T caddy curl -fsS http://caddy:80/healthz
             # Add more healthchecks here
             # docker compose exec -T caddy curl -fsS http://api:8080/healthz
