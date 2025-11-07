@@ -75,12 +75,12 @@ services:
       CADDY_SITE_ADDRESS: ":80"
     networks:
       default:
-      proxy_default:
+      myapp-proxy_default:
         aliases:
           - ${COMPOSE_PROJECT_NAME}_caddy
 
 networks:
-  proxy_default:
+  myapp-proxy_default:
     external: true
 ```
 
